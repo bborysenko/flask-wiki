@@ -1,0 +1,74 @@
+# -*- coding: utf-8 -*-
+""" Класс для работы с MongoDB """
+from pymongo import Connection
+from bson.objectid import ObjectId
+import hashlib
+from random import randint
+
+#import wiki.config.config
+
+class MongoDB( object ):
+    def __init__( self ):
+		self.connection = Connection()
+		self.db = self.connection.wiki
+
+	# получает пост по url
+    def get_page( self, url = None ):
+		try:
+			if url is None:
+				return None
+			# Делаю запрос к БД на получение соответствующего поста
+			res = self.db.wiki.find( { 'url' : url } )
+			# Произвожу парсинг данных
+			post_url = res[0]['url']
+			create = res[0]['create']
+			update = None
+			text = None
+			title = None
+			for d in res[0]['pages']:
+				if d['public'] == 1:
+					text = d['text']
+					update = d['update']
+					title = d['title']
+					break
+			data = { 'url' : post_url, 'create' : create, 'update' : update, 'text' : text, 'title' : title  }
+			return data
+		except:
+			return None
+
+	# Создает новый документ в MongoDB
+    def insert_page( self, url, title, text, comment, user, category ):
+            id_document = self.db.wiki.insert( { 'url':url, 'page_id' : None, 'category_id':'0001', 'user_id':'001', 'date_create':'2013-01-01' } )
+            id_page = self.db.pages.insert(
+                               {
+                                    'title' : title,
+                                    'text' : text,
+                                    'date_create': '2013-01-01',
+                                    'user_id' : ''
+                                }
+                            )
+
+        self.db.pages.find()
+        self.db.pages.insert( { 'title' : title, 'text' : text, 'date_create': '2013-01-01', 'user_id': '001'  } )
+
+
+
+
+    def update_page( self, url_alt, url, title, text, comment ):
+        pass
+	# получает всю историю версий поста
+	def getPageHistory( self, url ):
+		if url is None:
+			return None
+		else:
+            pass
+	# получает пост с id == id_page из истории
+	def getPagePostHistory(  self, url, id_page ):
+        pass
+	# Делает активной статью в истории
+	def setPageActivityHistory( self, url, id_page ):
+        pass
+
+	# random page
+	def getRandomPage( self ):
+        pass

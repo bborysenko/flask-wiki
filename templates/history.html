@@ -1,0 +1,61 @@
+{% extends "_base.html" %}
+
+{% block content %}
+	
+	<div class="title">
+    {{ pages['title'] }}
+	</div>
+	<hr class="line">
+
+  <form action="/wiki/{{word}}/history" method="post">
+
+		<table id="history_table">
+			<tr>
+				<th width="50">
+					Активно
+				</th>
+				<th width="200">
+					Дата изменения
+				</th>
+				<th width="200">
+					Пользователь
+				</th>	
+				<th width="80">
+					Размер
+				</th>
+				<th width="80">
+					Просмотр
+				</th>   
+				<th>
+					Комментарий
+				</th>
+			</tr>
+
+			{% for page in pages['posts'] %}
+				<tr>
+					<td>
+            <input type="radio" name="history" {% if page['public'] == True %} checked {% endif %} value="{{page['_id']}}">&nbsp
+					</td>
+					<td>
+						{{ page['creation_date'] }}
+					</td>
+					<td>
+            {{ page['user'] }}
+					</td>
+					<td>
+						{{ page['size'] }} байт
+					</td>
+					<td>
+						<a href="/wiki/{{word}}/history/{{page['_id']}}"><img width="20" height="20" src="/static/lupa.jpg"></a>
+					</td>
+					<td>
+						{{ page['comment'] }}					
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+		<div style="margin-top:10px;margin-bottom:50px">
+			<input type="submit" value="Сохранить">
+		</div>
+	</form>
+{% endblock %}

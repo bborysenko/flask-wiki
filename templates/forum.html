@@ -1,0 +1,36 @@
+{% extends "_base.html" %}                                                     
+{% block title %}Index{% endblock %}                                           
+
+{% block content %}                                                            
+  <div class="title">                                                          
+      Обсуждение статьи: {{title}}                                    
+  </div>                                                                       
+  <hr class="line">     
+  {% if messages %}
+    {% for message in messages %}                                   
+      <div class="block" style="border:1px solid #ddddff;padding-left:10px; padding-top:10px;background-color:#EFF5FB;">                                                         
+          <div style="color:black;font-size:16px;color:blue;">                                
+            {{message.creation_date}} | {{message.user_name}}:               
+          </div>                                                                                                
+      
+          <div class="block">                                                                    
+              {{message.text}}                                                          
+          </div>                                                                   
+      </div>                                                                       
+    {% endfor %}
+  {% else %}
+    <div class="text" style="color:blue;font-size:18px;">
+      <div style="margin-top:20px;margin-bottom:20px;">Пусто</div>
+    </div>
+  {% endif %}
+  <div class="block">
+        <form action="/wiki/{{word}}/forum" method="POST">
+          <div class="block">
+            {{ form.text( class = "comment_field" ) }}
+          </div>
+          <div class="block">
+            {{form.submit}}
+          </div>
+        </form>
+    </div>
+{% endblock %}      
