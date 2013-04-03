@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+
+{% block content %}
+	<div class="title">
+		{{post.title}}
+	</div>
+
+	<hr class="line">
+
+	<div class="text">
+		{{post.text|safe}}
+	</div>
+
+{% endblock %}

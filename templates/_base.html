@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="/static/stylewiki.css">
+		<title>{% block title  %}{% endblock %}</title>
+		<script>
+			function focus_true(obj){
+        if( obj.value.toLowerCase().trim() == "поиск" )
+        {
+          obj.value = "" ;
+        }
+      }
+
+      function focus_false(obj){
+        if( obj.value.trim() == ""){
+          obj.value = "Поиск" ;
+        }
+      }
+
+      function form_submit(){
+        text_field = document.getElementById('search');
+        text = text_field.value.toLowerCase().trim()
+        if( text == "поиск" || text.length <= 0 ){
+          return false;
+        }
+        else{
+          return true;
+        }
+      }
+		</script>
+	</head>
+	<body>
+		<div width="100%">
+			<div width="100%">
+				<div id="header">
+					<div id="logo">
+						«Живые встречи»<br>
+						WIKI
+					</div>
+					<div id="user">
+
+            {% if current_user.is_authenticated() %}                           
+                <a href="{{ url_for('profile') }}">Профиль</a> ({{ current_user.login }}) | <a href="{{ url_for('logout') }}">Выход</a>
+            {% else %}                                                         
+                <a href="{{ url_for('login', next=request.path) }}">Вход</a>   
+            {% endif %} 
+
+					</div>
+				</div>
+			</div>
+			<div id="left_panel">
+				<ul id="left_menu">
+					<li><a href="/wiki">Заглавная страница</a></li>
+					<li><a href="/wiki/alphabet">Алфавитный указатель</a></li>
+			<!--		<li><a href="/wiki/random">Случайная статья</a></li>
+      -->
+          <li><a href="/wiki/all">Все статьи</a></li>
+      {#   
+          <li><a href="/wiki/favorites">Избранные статьи</a></li>
+					<li><a href="/wiki/latter">Последние статьи</a></li>
+					<li><a href="/wiki/latedit">Последние правки</a></li>
+      #}  
+        </ul>
+			</div>
+		<!--	<div id="conteiner">
+			-->
+				<div id="main_menu">
+          {% if page %}
+				    <span class="create">
+              {#% if page.create %}
+							  Создан: {{ page.creation_date }}
+              {% endif %#}
+					  </span>
+					  <span class="create">
+						    {#% if page.update %}
+							    Измененн: {{ page.creation_date }}
+                {% endif %#}
+            </span>
+          {% endif %}
+
+          {% if form %}
+				    <span class="create">
+              {% if form.create %}
+							  Создан: {{ form.create }}
+              {% endif %}
+					  </span>
+					  <span class="create">
+						    {% if form.update %}
+							    Измененн: {{ form.update }}
+                  {% endif %}
+                </span>
+          {% endif %}
+
+					{% if navigation %}
+						<ul id="navigation">
+              {% if current_user.is_authenticated() %} 
+                <li><a id="active" href="/wiki/{{word}}">Чтение</a></li>
+                <li><a href="/wiki/{{word}}/edit">Правка</a></li>
+                <li><a href="/wiki/{{word}}/history">История</a></li>
+                <li><a href="/wiki/{{word}}/forum">Обсуждение</a></li>
+              {% endif %}
+						</ul>
+					{% endif %}
+          <div  id="searchbar"> 
+          		<form id="searchform"  onSubmit="return form_submit();" method="post" action="/wiki/find">
+                
+                <div>
+                  <div style="width:300px;float:left;margin:0;padding:0;">
+                    <input autocomplete="off" type="text" {% if search %} value="{{ search }}" {% else  %} value="Поиск" {% endif %}id="search" onBlur="focus_false(this)" onFocus="focus_true(this)" name="search"/>
+                  </div>
+                  <div style="width:30px;text-align:left;margin:0;padding:0;gackground-color:#0f0;float:left;">
+                    <input type="submit" value=""/>
+                  </div>
+								</span>
+              </div>      
+          	</form>
+          </div>  
+				</div>
+			<div id="conteiner">
+				<div id="content">
+						{% block content %}
+						{% endblock %}
+					</div>
+				</div>
+			</div>
+			<div id="copy">
+				Копирайт
+			</div>
+<!--		</div>
+-->	</body>
+</html>

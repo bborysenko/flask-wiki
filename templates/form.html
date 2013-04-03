@@ -1,0 +1,43 @@
+{% extends "_base.html" %}
+
+{% block content %}
+	<form method="post" action="/wiki/">
+      {{ form.url }}
+      {% if errors %}
+				<div class="errors">
+					{% for error in errors %}
+						<div class="error">
+							Ошибка: {{ error }}
+						</div>
+					{% endfor %}
+				</div>		
+			{% endif %}		
+
+			<div class="title">
+				Создание страницы
+			</div>
+			
+			<hr class="line">
+			
+			<div class="block">
+				{{ form.title( class = "text_field_line" ) }}
+			</div>
+
+			<div class="block">
+				{{ form.text( class = "text_field" ) }}
+			</div>
+			
+			<div class="block">
+				{# form.category #}
+			</div>
+
+			<div class="block">
+				{{ form.comment( class = "text_field_line" ) }}
+			</div>
+
+			<div class="block">
+        {{ form.submit }}
+      </div>
+	 </form>
+{% endblock %}
+

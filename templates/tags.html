@@ -1,0 +1,32 @@
+{% extends "_base.html" %}
+{% block title %}Index{% endblock %}
+{% block content %}
+  <div class="title">
+    Выборка статей с тегами: {{tags}}. 
+  </div>
+  <hr class="line">
+  {% if pages %}
+    {% for page in pages %}
+      <div class="text">
+        <div style="color:black;font-size:18px;">
+          <a href="/wiki/{{page.url}}">{{page.title|title}}</a>
+        </div>
+        <hr class="line">
+        <div>
+          {{page.text}}
+        </div>
+        <div style="color:blue;font-size:12px;">
+          Теги:
+          {#{page.tags}#}
+          {% for d in page.tags %}
+            <a href="/wiki/tags/{{d}}">{{d}}</a>  
+          {% endfor %}                     
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div style="color:blue;font-size:15px;">
+      Ничего не найденно
+    </div>
+  {% endif %}
+{% endblock %}
