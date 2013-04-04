@@ -24,7 +24,11 @@ class Wiki(db.Model):
     user_id = db.Column(db.Integer)
     creation_date = db.Column(db.DateTime,nullable = True, default = datetime.datetime.now())
     page_id = db.Column(db.Integer, db.ForeignKey('pages.id'), nullable=False)
-    page = db.relation("Page", backref='wiki', lazy=False)
+
+    page = db.relation("Page", backref='wiki', lazy=True)
+
+    all_pages = db.relationship("Page")
+#    all_pages = db.relationship("Page", backref="awiki")
 
     def __init__(self, url, title, access, user_id):
         self.url = url
@@ -44,6 +48,10 @@ class Page(db.Model):
     comment = db.Column(db.String(255))
     creation_date = db.Column(db.DateTime, default = datetime.datetime.now())
 
+    #tags = db.relation("PageTag", uselist = True, backref = "page")
+    tags = db.relationship("PageTag", backref="page")
+    wiki_page = db.relationship("Wiki", backref="pages")
+
     def __init__(self, text, user_id, active, comment):
         self.text = text
         self.user_id = user_id
@@ -57,8 +65,8 @@ class PageTag(db.Model):
     tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'))
 #        page = relation("PageTags", backref="tags", lazy = False)
 #        page = Column(Integer, ForeignKey('pages.id'), default = 0)
-    def __init__(self, page_id):
-        self.page_id = page_id
+    def __init__(self):
+        pass
 
 
 class Tag(db.Model):
@@ -66,7 +74,7 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     tag = db.Column(db.String(100))
     tags = db.relation("PageTag", backref="pagestags", lazy = False)
-    page_tags = db.relation("PageTag", backref='tags', lazy=False)
+    page_tags = db.relation("PageTag", backref='tag_name', lazy=False)
     def __init__(self, tag):
         self.tag = tag
 
@@ -75,53 +83,48 @@ class Tag(db.Model):
 class Postgresql(object):
 
     def get_page(self, url = None):
-#        return None
         try:
             wiki = Wiki.query.filter_by(url = str(url)).first()
-            page = Page.query.filter_by(id = wiki.page_id).first()
-
-            tags = db.session.query(PageTag).filter(PageTag.page_id == page.id).all()
-            tags_id = []
-            for d in tags:
-                tags_id.append(d.tag_id)
-            tags_name = db.session.query(Tag).filter(Tag.id.in_(tags_id))
-            tags_names = []
-            for d in tags_name:
-                tags_names.append(d.tag)
-
-            wiki = Wiki.query.filter_by(url = str(url)).first()
-            page = Page.query.filter_by(id = wiki.page_id).first()
-            return { 'access': 'All', 'text' : page.text, 'title': wiki.title, 'url': wiki.url, 'tags' : tags_names, 'creation_date' : '' }
+            tags = []
+            for d in wiki.page.tags:
+                tags.append(d.tag_name.tag)
+            return { 'access': wiki.access,
+                    'text' : wiki.page.text,
+                    'title': wiki.title,
+                    'url': wiki.url,
+                    'tags' : tags,
+                    'creation_date' : ''
+                   }
         except:
             return None
 
 
+
     def insert_page( self, url, title, text, comment, user, tags, access ):
-        wiki = Wiki( url = url, title = title, access = access, user_id = 1)
+        wiki = Wiki(url = url,
+                    title = title,
+                    access = access,
+                    user_id = 1
+                   )
         page = Page(text = text,
-                          user_id = 1,
-                          active = 1,
-                          comment = comment
-                         )
+                    user_id = 1,
+                    active = 1,
+                    comment = comment
+                )
         wiki.page = page
         db.session.add(wiki)
         db.session.commit()
 
         page.wiki_id = wiki.id
-        db.session.commit()
-
-        db.session.query(Page).filter_by(id = page.id).update({'wiki_id':wiki.id})
-        db.session.commit()
-
-        arr_tags = [w.strip(';?!: ') for w in tags.split(',')]
+        arr_tags = [w.replace(';?!.:', '').strip() for w in tags.split(',')]
         for d in arr_tags:
-            tag = db.session.query(Tag).filter_by(tag = d).first()
-            page_tags = PageTag(page.id)
-            if tag != None:
-                page_tags.tags = tag
+            tag = Tag.query.filter_by(tag = str(d)).first()
+            pt = PageTag()
+            if tag is not None:
+                pt.pagestags = tag
             else:
-                page_tags.tags = Tag(str(d))
-                db.session.add(page_tags)
+                pt.tag_name = Tag(str(d))
+            page.tags.append( pt )
         db.session.commit()
 
 
@@ -139,23 +142,24 @@ class Postgresql(object):
         wiki.page_id = page.id
         db.session.commit()
 
-
-        arr_tags = [w.strip(';?!: ') for w in tags.split(',')]
+        page.wiki_id = wiki.id
+        arr_tags = [w.replace(';?.!:', '').strip() for w in tags.split(',')]
         for d in arr_tags:
-            tag = db.session.query(Tag).filter_by(tag = d).first()
-            page_tags = PageTag(page.id)
-            if tag != None:
-                page_tags.tags = tag
+            tag = Tag.query.filter_by(tag = str(d)).first()
+            pt = PageTag()
+            if tag is not None:
+                pt.pagestags = tag
             else:
-                page_tags.tags = Tag(str(d))
-                db.session.add(page_tags)
+                pt.tag_name = Tag(str(d))
+            page.tags.append( pt )
         db.session.commit()
-
 
     # получает всю историю поста
     def get_pages_history( self, url ):
         wiki = Wiki.query.filter_by(url = str(url)).first()
-        pages = Page.query.filter_by(wiki_id = wiki.id).all()
+
+        wiki
+        wiki.z
 
         pages_list = []
         for d in pages:
