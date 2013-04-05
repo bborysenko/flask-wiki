@@ -24,10 +24,12 @@ class Wiki(db.Model):
     access = db.Column(db.String(255))
     user_id = db.Column(db.Integer)
     creation_date = db.Column(db.DateTime, default = "NOW()")
+    page = db.relationship("Page",
+                            primaryjoin="and_(Page.wiki_id==Wiki.id, Page.active==1)",
+                            uselist=False
+                        )
 
-    page_id = db.Column(db.Integer, db.ForeignKey('pages.id'))
 
-    page = db.relationship("Page", uselist=False, foreign_keys = page_id)
 
     def __init__(self, url, title, access, user_id):
         self.url = url
@@ -45,10 +47,9 @@ class Page(db.Model):
     user_id = db.Column(db.Integer)
     active = db.Column(db.Boolean)
     comment = db.Column(db.String(255))
-#    creation_date = db.Column(db.DateTime, default = datetime.datetime.now())
     creation_date = db.Column(db.DateTime, default = "NOW()")
 
-    wiki = db.relationship("Wiki", backref="pages", uselist=True, lazy='dynamic', foreign_keys=wiki_id)
+    wiki = db.relationship('Wiki', backref=db.backref('pages', lazy='dynamic'), uselist=False, foreign_keys=wiki_id)
     tags = db.relationship('Tags',
                             secondary=pages_tags,
                             backref=db.backref('pages', lazy='dynamic')
@@ -81,15 +82,14 @@ class Postgresql(object):
             if wiki is None:
                 return None
             else:
-                tags = [t.tag_name for t in wiki.page.tags]
-                return { 'access': wiki.access,
+                return {'access': wiki.access,
                         'text' : wiki.page.text,
                         'title': wiki.title,
                         'url': wiki.url,
-                        'tags' : tags,
+                        'tags' : [t.tag_name for t in wiki.page.tags],
                         'creation_date' : wiki.creation_date,
                         'modify_date' : wiki.page.creation_date
-                        }
+                    }
 
 
     def insert_page( self, url, title, text, comment, user, tags, access ):
@@ -111,15 +111,8 @@ class Postgresql(object):
                 tag = Tags(t)
             page.tags.append(tag)
 
-        wiki.page = page
-#############################################################
-        db.session.add(wiki)
-        db.session.commit()
-        wiki.page.wiki_id = wiki.id
-############################################################
-#        page.wiki = [wiki]
-
-        db.session.add(wiki)
+        page.wiki = wiki
+        db.session.add(page)
         db.session.commit()
 
 
@@ -130,10 +123,8 @@ class Postgresql(object):
                     active = 1,
                     comment = comment
                 )
-        # изменения атрибут active в 0
         wiki.page.active = 0
-        db.session.add(wiki)
-        db.session.commit()
+        page.wiki = wiki
 
         tags = [str(t.replace(';?!.:', '').strip()) for t in tags.split(',')]
         for t in tags:
@@ -141,11 +132,8 @@ class Postgresql(object):
             if tag is None:
                 tag = Tags(t)
             page.tags.append(tag)
-############################################
-        page.wiki_id = wiki.id
-        wiki.page = page
-#########################################
-        db.session.add(wiki)
+
+        db.session.add(page)
         db.session.commit()
 
 
@@ -155,7 +143,7 @@ class Postgresql(object):
         pages_list = []
         for d in wiki.pages:
             public = False
-            if d.id == wiki.page_id:
+            if d.active == 1:
                 public = True
             page = {
                 'text' : d.text,
@@ -186,8 +174,9 @@ class Postgresql(object):
         wiki = Wiki.query.filter_by(url = str(url)).first()
         for d in wiki.pages:
             if int(page_id) == d.id:
-                wiki.page = d
-        db.session.add(wiki)
+                d.active = 1
+            else:
+                d.active = 0
         db.session.commit()
 
 
@@ -202,8 +191,8 @@ class Postgresql(object):
                 continue
             tags = [t.tag_name for t in d.tags]
             res = {
-                    'title' : d.wiki[0].title,
-                    'url' : d.wiki[0].url,
+                    'title' : d.wiki.title,
+                    'url' : d.wiki.url,
                     'text' : d.text,
                     'tags' : tags
                 }
@@ -213,6 +202,7 @@ class Postgresql(object):
 
     # алфавитный указатель
     def find_pages(self, letter):
+        letter = letter.replace(""";?!.:@#$%^&*()-~_{}"' """, '')
         letter_lower = letter.lower()
         if len(letter_lower) != 1:
             return None
