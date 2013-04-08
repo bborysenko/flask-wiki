@@ -3,17 +3,13 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin
+from flask.ext.login import LoginManager,UserMixin,AnonymousUser,login_user,logout_user,current_user,login_required, make_secure_token
 
 import datetime
 #from models import db
+from models import *
 
 db  = SQLAlchemy()
-
-
-pages_tags = db.Table('pages_tags',
-                          db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')),
-                          db.Column('page_id', db.Integer, db.ForeignKey('pages.id'))
-                     )
 
 
 class Wiki(db.Model):
@@ -31,11 +27,19 @@ class Wiki(db.Model):
 
 
 
-    def __init__(self, url, title, access, user_id):
+    def __init__(self, url, title, access, user):
         self.url = url
         self.title = title
         self.access = access
-        self.user_id = user_id
+        self.user_id = user.id
+
+
+pages_tags = db.Table('pages_tags',
+                        db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')),
+                        db.Column('page_id', db.Integer, db.ForeignKey('pages.id')),
+#                        db.Column('page', uselist = False, backref = db.backref(primaryjoin)
+#                        db.Column('page', uselist=False, foregin_keys = 'tag_id')
+                     )
 
 
 class Page(db.Model):
@@ -48,19 +52,23 @@ class Page(db.Model):
     active = db.Column(db.Boolean)
     comment = db.Column(db.String(255))
     creation_date = db.Column(db.DateTime, default = "NOW()")
+#   active_tags = db.relationship()
+
 
     wiki = db.relationship('Wiki', backref=db.backref('pages', lazy='dynamic'), uselist=False, foreign_keys=wiki_id)
     tags = db.relationship('Tags',
                             secondary=pages_tags,
-                            backref=db.backref('pages', lazy='dynamic')
+#                            backref=db.backref('pages', uselist = False, lazy = "dynamic",primaryjoin=pages_tags.page_id == 1),
+                            backref=db.backref('pages', uselist = True, lazy = "dynamic")
                           )
 
 
-    def __init__(self, text, user_id, active, comment):
+    def __init__(self, text, user, active, comment):
         self.text = text
-        self.user_id = user_id
+#        self.user_id = user_id
         self.active = active
         self.comment = comment
+        self.user_id = user.id
 
 
 class Tags(db.Model):
@@ -78,7 +86,7 @@ class Postgresql(object):
         if url is None:
             return None
         else:
-            wiki = Wiki.query.filter_by(url = str(url)).first()
+            wiki = Wiki.query.filter_by(url = url).first()
             if wiki is None:
                 return None
             else:
@@ -93,13 +101,14 @@ class Postgresql(object):
 
 
     def insert_page( self, url, title, text, comment, user, tags, access ):
+        user = User.query.filter_by(login=user).first()
         wiki = Wiki(url = url,
                     title = title,
                     access = access,
-                    user_id = 1
+                    user  = user
                    )
         page = Page(text = text,
-                    user_id = 1,
+                    user = user,
                     active = 1,
                     comment = comment
                 )
@@ -117,13 +126,15 @@ class Postgresql(object):
 
 
     def update_page( self, url_page, url, title, text, comment, tags, user, access ):
+        user = User.query.filter_by(login=user).first()
         wiki = Wiki.query.filter_by(url = str(url)).first()
         page = Page(text = text,
-                    user_id = 1,
+                    user = user,
                     active = 1,
                     comment = comment
                 )
         wiki.page.active = 0
+        wiki.access = access
         page.wiki = wiki
 
         tags = [str(t.replace(';?!.:', '').strip()) for t in tags.split(',')]
@@ -139,7 +150,9 @@ class Postgresql(object):
 
     # получает всю историю поста
     def get_pages_history( self, url ):
-        wiki = Wiki.query.filter_by(url = str(url)).first()
+        wiki = Wiki.query.filter_by(url = url).first()
+        if wiki is None:
+            return None
         pages_list = []
         for d in wiki.pages:
             public = False
@@ -151,7 +164,7 @@ class Postgresql(object):
                 'creation_date' : d.creation_date,
                 'public' : public,
                 'size' : len(d.text),
-                'user' : d.user_id,
+                'user' :  User.query.filter_by(id=d.user_id).first().login,
                 'comment' : d.comment,
                 '_id' : d.id
             }
@@ -162,7 +175,7 @@ class Postgresql(object):
 
     # получает пост с id == id_page из истории
     def get_page_history(self, url, page_id):
-        wiki = Wiki.query.filter_by(url = str(url)).first()
+        wiki = Wiki.query.filter_by(url = url).first()
         for d in wiki.pages:
             if int(page_id) == d.id:
                 return { 'text' : d.text, 'title' : wiki.title }
@@ -171,32 +184,34 @@ class Postgresql(object):
 
     # Делает активной статью в истории
     def set_activity_history( self, url, page_id ):
-        wiki = Wiki.query.filter_by(url = str(url)).first()
-        for d in wiki.pages:
-            if int(page_id) == d.id:
-                d.active = 1
-            else:
-                d.active = 0
+        wiki = Wiki.query.filter_by(url = url).first()
+        wiki.page.active = 0
+
+        page = Page.query.filter_by(id = int(page_id)).first()
+        page.active = 1
         db.session.commit()
 
 
     # поиск страниц по тегу
     def find_page_tags(self, tags):
+#        tags = tags.replace(';?!.:@#$%^&*()-~_{}" ', '')
+#        pages = Wiki.query.filter().
         tags = [str(t.replace(';?!.:', '').strip()) for t in tags.split(',')]
-        data_tags = Tags.query.filter(Tags.tag_name.in_(tags)).first()
-
+        data_tags = Tags.query.filter(Tags.tag_name.in_(tags)).all()
+#        data_tags.w
         result = []
-        for d in data_tags.pages:
-            if int(d.active) != 1:
-                continue
-            tags = [t.tag_name for t in d.tags]
-            res = {
-                    'title' : d.wiki.title,
-                    'url' : d.wiki.url,
-                    'text' : d.text,
+        for d in data_tags:
+            for page in d.pages:
+                if int(page.active) != 1:
+                    continue
+                tags = [t.tag_name for t in page.tags]
+                res = {
+                    'title' : page.wiki.title,
+                    'url' : page.wiki.url,
+                    'text' : page.text,
                     'tags' : tags
                 }
-            result.append(res)
+                result.append(res)
         return result
 
 
@@ -206,9 +221,7 @@ class Postgresql(object):
         letter_lower = letter.lower()
         if len(letter_lower) != 1:
             return None
-
-        wiki = Wiki.query.filter(Wiki.title.like(letter_lower + "%")).all()
-
+        wiki = Wiki.query.filter(Wiki.title.startswith(letter_lower)).all()
         if wiki is None:
             return None
         else:
@@ -243,3 +256,33 @@ class Postgresql(object):
             }
             result.append(res)
         return result
+
+    def get_alphabet(self):
+#        wiki = Wiki.query.filter_by(url = url).first()
+#        result = db.session.query(db.func.substr(Wiki.title, 1, 1), db.func.substr(Wiki.title(1, 1)).count()).all()
+#        result.x
+#        result = Wiki.query(Wiki.title, db.func.substr(Wiki.title, 0, 1),label("total")).all()
+        result = db.session.execute("""SELECT UPPER(substring(title from 1 for 1)) AS alphabet,
+                                    COUNT(substring(title from 1 for 1)) FROM wiki
+                                    GROUP BY alphabet ORDER BY alphabet
+                                    """
+                                   )
+        alphabet_ru = {}
+        alphabet_en = {}
+        letters_en= u"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        letters_ru = u"АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ"
+        for d in result:
+            for letter in letters_en:
+                if d[0] == letter:
+                    alphabet_en[letter] = int(d[1])
+                else:
+                    if alphabet_en.get(letter) is None:
+                        alphabet_en[letter] = 0
+            for letter in letters_ru:
+                if d[0] == letter:
+                    alphabet_ru[letter] = int(d[1])
+                else:
+                    if alphabet_ru.get(letter) is None:
+                        alphabet_ru[letter] = 0
+        return {'en':alphabet_en, 'ru':alphabet_ru}
+#        wiki = Wiki.query.filter(Wiki.title.startswith(letters)).group_by(Wiki.title).all()
