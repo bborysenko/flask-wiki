@@ -22,4 +22,4 @@ def view(word=None):
         else:
             # Вывод страницы
             page['text'] = markdown2.markdown(page['text'])
-            return render_template('page.html', page=page, navigation=True, word=get_url(word))
+            return render_template('page.html', page=page, navigation=True, read = True, word=get_url(word))

@@ -52,8 +52,8 @@
 				<ul id="left_menu">
 					<li><a href="/wiki">Заглавная страница</a></li>
 					<li><a href="/wiki/alphabet">Алфавитный указатель</a></li>
-			<!--		<li><a href="/wiki/random">Случайная статья</a></li>
-      -->
+      {#		<li><a href="/wiki/random">Случайная статья</a></li>
+      #}
           <li><a href="/wiki/all">Все статьи</a></li>
       {#   
           <li><a href="/wiki/favorites">Избранные статьи</a></li>
@@ -67,38 +67,38 @@
 				<div id="main_menu">
           {% if page %}
 				    <span class="create">
-              {#% if page.create %}
+              {% if page.creation_date %}
 							  Создан: {{ page.creation_date }}
-              {% endif %#}
-					  </span>
-					  <span class="create">
-						    {#% if page.update %}
-							    Измененн: {{ page.creation_date }}
-                {% endif %#}
-            </span>
-          {% endif %}
-
-          {% if form %}
-				    <span class="create">
-              {% if form.create %}
-							  Создан: {{ form.create }}
               {% endif %}
 					  </span>
 					  <span class="create">
-						    {% if form.update %}
-							    Измененн: {{ form.update }}
+						    {% if page.modify_date %}
+							    Измененн: {{ page.modify_date }}
+                {% endif %}
+            </span>
+          {% endif %}
+
+          {#% if form %}
+				    <span class="create">
+              {% if form.create_date %}
+							  Создан: {{ form.create_date }}
+              {% endif %}
+					  </span>
+					  <span class="create">
+						    {% if form.modify_date %}
+							    Измененн: {{ form.modify_date }}
                   {% endif %}
                 </span>
-          {% endif %}
+          {% endif %#}
 
 					{% if navigation %}
 						<ul id="navigation">
               {% if current_user.is_authenticated() %} 
-                <li><a id="active" href="/wiki/{{word}}">Чтение</a></li>
-                <li><a href="/wiki/{{word}}/edit">Правка</a></li>
-                <li><a href="/wiki/{{word}}/history">История</a></li>
-                <li><a href="/wiki/{{word}}/forum">Обсуждение</a></li>
-              {% endif %}
+                <li><a {% if read %} id="active" {% endif %} href="/wiki/{{word}}">Чтение</a></li>
+                <li><a {% if edit %} id="active" {% endif %} href="/wiki/{{word}}/edit">Правка</a></li>
+                <li><a {% if history %} id="active" {% endif %}href="/wiki/{{word}}/history">История</a></li>
+      {#         <li><a href="/wiki/{{word}}/forum">Обсуждение</a></li>
+      #}      {% endif %}
 						</ul>
 					{% endif %}
           <div  id="searchbar"> 

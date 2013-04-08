@@ -41,6 +41,7 @@ def get_form_edit(word):
                                page=page,
                                message=u"Вы не имеете прав на редaкатирование страницы",
                                navigation=True,
+                               edit = True,
                                word=get_url(word)
                                )
     if page is None:
@@ -66,4 +67,4 @@ def get_form_edit(word):
         form.url.data = page['url']
         form.access.data = page['access']
 #        form.tags.data  = page['tags']
-        return render_template('form_edit.html', form=form, navigation=True, word=get_url(word))
+        return render_template('form_edit.html', form=form, navigation=True, edit = True, word=get_url(word))

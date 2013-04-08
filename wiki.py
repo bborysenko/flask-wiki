@@ -22,6 +22,7 @@ from methods.get_pages_latter import get_pages_latter
 
 from database.database import get_database_object
 
+
 wiki = Blueprint('appwiki', __name__,
                  template_folder='templates', static_folder='static')
 

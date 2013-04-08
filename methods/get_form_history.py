@@ -27,11 +27,12 @@ def get_form_history(word=None):
                                page=page,
                                message=u"Вы не имеете прав на просмотр истории изменения страницы",
                                navigation=True,
-                               word=get_url(word)
+                               word=get_url(word),
+                               history = True
                                )
 
     pages = flask.g.database.get_pages_history(get_url(word))
 #    if pages is None:
 #        return 'error!'
 #    else:
-    return render_template('history.html', pages=pages, word=get_url(word), navigation=True)
+    return render_template('history.html', pages=pages, word=get_url(word), navigation=True, history = True)

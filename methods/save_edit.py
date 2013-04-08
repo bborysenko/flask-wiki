@@ -30,7 +30,8 @@ def save_edit(word=None):
                                page=page,
                                message=u"Вы не имеете прав на редaкатирование страницы",
                                navigation=True,
-                               word=word
+                               word=word,
+                               edit = True
                                )
 
     if page is None:
@@ -56,7 +57,7 @@ def save_edit(word=None):
             # Редирект на созданную страницу
             return redirect(url_for('.view', word=get_url(title)))
         else:
-            return render_template('form_create.html', form=form, navigation=True)
+            return render_template('form_create.html', form=form)
     else:
         form = EditDataForm(request.form)
         if form.validate():

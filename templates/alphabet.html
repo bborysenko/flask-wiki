@@ -9,71 +9,47 @@
 
   <hr class="line">
 
-<table id="toc" class="plainlinks" style="color:blue;width: 100%;padding: 3px;margin: 0 auto;">
+<table id="toc" class="plainlinks" style="color:blue;width: 100%;padding: 3px;margin: 0 auto;text-align:center;">
     <tbody>
       <tr>
-        <td><a href="/wiki/alphabet/А" title="Поиск/А">А</a></td>
-        <td><a href="/wiki/alphabet/Б" title="Поиск/Б">Б</a></td>
-        <td><a href="/wiki/alphabet/В" title="Поиск/В">В</a></td>
-        <td><a href="/wiki/alphabet/Г" title="Поиск/Г">Г</a></td>
-        <td><a href="/wiki/alphabet/Д" title="Поиск/Д">Д</a></td>
-        <td><a href="/wiki/alphabet/Е" title="Поиск/Е">Е</a></td>
-        <td><a href="/wiki/alphabet/Ё" title="Поиск/Ё">Ё</a></td>
-        <td><a href="/wiki/alphabet/Ж" title="Поиск/Ж">Ж</a></td>
-        <td><a href="/wiki/alphabet/З" title="Поиск/З">З</a></td>
-        <td><a href="/wiki/alphabet/И" title="Поиск/И">И</a></td>
-        <td><a href="/wiki/alphabet/Й" title="Поиск/Й">Й</a></td>
-        <td><a href="/wiki/alphabet/К" title="Поиск/К">К</a></td>
-        <td><a href="/wiki/alphabet/Л" title="Поиск/Л">Л</a></td>
-        <td><a href="/wiki/alphabet/М" title="Поиск/М">М</a></td>
-        <td><a href="/wiki/alphabet/Н" title="Поиск/Н">Н</a></td>
-        <td><a href="/wiki/alphabet/О" title="Поиск/О">О</a></td>
-        <td><a href="/wiki/alphabet/П" title="Поиск/П">П</a></td>
-        <td><a href="/wiki/alphabet/Р" title="Поиск/Р">Р</a></td>
-        <td><a href="/wiki/alphabet/С" title="Поиск/С">С</a></td>
-        <td><a href="/wiki/alphabet/Т" title="Поиск/Т">Т</a></td>
-        <td><a href="/wiki/alphabet/У" title="Поиск/У">У</a></td>
-        <td><a href="/wiki/alphabet/Ф" title="Поиск/Ф">Ф</a></td>
-        <td><a href="/wiki/alphabet/Х" title="Поиск/Х">Х</a></td>
-        <td><a href="/wiki/alphabet/Ц" title="Поиск/Ц">Ц</a></td>
-        <td><a href="/wiki/alphabet/Ч" title="Поиск/Ч">Ч</a></td>
-        <td><a href="/wiki/alphabet/Ш" title="Поиск/Ш">Ш</a></td>
-        <td><a href="/wiki/alphabet/Щ" title="Поиск/Щ">Щ</a></td>
-        <td><a href="/wiki/alphabet/Э" title="Поиск/Э">Э</a></td>
-        <td><a href="/wiki/alphabet/Ю" title="Поиск/Ю">Ю</a></td>
-        <td><a href="/wiki/alphabet/Я" title="Поиск/Я">Я</a></td>
+        {% for d in "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ" %}
+        <td style="30px;"> 
+              {% if alphabet.ru[d] %}
+                <span>
+                  <a style="text-decoration:none;color:blue;" title="Колличество статей: {{ alphabet.ru[d] }}" href="/wiki/alphabet/{{d }}">{{ d }}
+                    <sub>{{ alphabet.ru[d] }}</sub>
+                  </a>
+                </span>
+              {% else %}
+                <span style="color:black;">
+                  {{ d }}
+                </span>
+              {% endif %}
+        </td>
+        {% endfor %}
       </tr>
       <tr>
-        <td><a href="/wiki/alphabet/A" title="Поиск/A">A</a></td>
-        <td><a href="/wiki/alphabet/B" title="Поиск/B">B</a></td>
-        <td><a href="/wiki/alphabet/C" title="Поиск/C">C</a></td>
-        <td><a href="/wiki/alphabet/D" title="Поиск/D">D</a></td>
-        <td><a href="/wiki/alphabet/E" title="Поиск/E">E</a></td>
-        <td><a href="/wiki/alphabet/F" title="Поиск/F">F</a></td>
-        <td><a href="/wiki/alphabet/G" title="Поиск/G">G</a></td>
-        <td><a href="/wiki/alphabet/H" title="Поиск/H">H</a></td>
-        <td><a href="/wiki/alphabet/I" title="Поиск/I">I</a></td>
-        <td><a href="/wiki/alphabet/J" title="Поиск/J">J</a></td>
-        <td><a href="/wiki/alphabet/K" title="Поиск/K">K</a></td>
-        <td><a href="/wiki/alphabet/L" title="Поиск/L">L</a></td>
-        <td><a href="/wiki/alphabet/M" title="Поиск/M">M</a></td>
-        <td><a href="/wiki/alphabet/N" title="Поиск/N">N</a></td>
-        <td><a href="/wiki/alphabet/O" title="Поиск/O">O</a></td>
-        <td><a href="/wiki/alphabet/P" title="Поиск/P">P</a></td>
-        <td><a href="/wiki/alphabet/Q" title="Поиск/Q">Q</a></td>
-        <td><a href="/wiki/alphabet/R" title="Поиск/R">R</a></td>
-        <td><a href="/wiki/alphabet/S" title="Поиск/S">S</a></td>
-        <td><a href="/wiki/alphabet/T" title="Поиск/T">T</a></td>
-        <td><a href="/wiki/alphabet/U" title="Поиск/U">U</a></td>
-        <td><a href="/wiki/alphabet/V" title="Поиск/V">V</a></td>
-        <td><a href="/wiki/alphabet/W" title="Поиск/W">W</a></td>
-        <td><a href="/wiki/alphabet/X" title="Поиск/X">X</a></td>
-        <td><a href="/wiki/alphabet/Y" title="Поиск/Y">Y</a></td>
-        <td><a href="/wiki/alphabet/Z" title="Поиск/Z">Z</a></td>
+        {% for d in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
+          <td style="width:35px">
+              {% if alphabet.en[d] %}
+                <span>
+                  <a style="text-decoration:none;color:blue;" title="Колличество статей: {{ alphabet.en[d] }}" href="/wiki/alphabet/{{d }}">{{ d }}
+                    <sub>{{ alphabet.en[d] }}</sub>
+                  </a>
+                </span>
+              {% else %}
+                <span style="color:black;">
+                  {{ d }}
+                </span>
+              {% endif %}
+          </td>
+        {% endfor %}
         <td></td>
         <td></td>
+        
         <td></td>
         <td></td>
+      
       </tr>
   </tbody>
 </table>

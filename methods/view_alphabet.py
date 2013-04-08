@@ -6,7 +6,9 @@ import flask
 
 def view_alphabet(letter=None):
     if letter is None or len(letter) != 1:
-        return render_template('alphabet.html')
+        alphabet = flask.g.database.get_alphabet()
+#        alphabet.x
+        return render_template('alphabet.html', alphabet = alphabet)
     else:
         pages = flask.g.database.find_pages(letter)
         try:

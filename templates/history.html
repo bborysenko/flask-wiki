@@ -1,12 +1,14 @@
 {% extends "_base.html" %}
 
 {% block content %}
-	
+  
+{% if pages %}
+  
 	<div class="title">
     {{ pages['title'] }}
 	</div>
 	<hr class="line">
-
+  
   <form action="/wiki/{{word}}/history" method="post">
 
 		<table id="history_table">
@@ -58,5 +60,10 @@
 		<div style="margin-top:10px;margin-bottom:50px">
 			<input type="submit" value="Сохранить">
 		</div>
-	</form>
+  </form>
+{% else %}
+  <div style="color:red;">
+    Пусто
+  </div>
+{% endif %}
 {% endblock %}
