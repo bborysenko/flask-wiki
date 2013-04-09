@@ -6,7 +6,6 @@ from flask.ext.login import UserMixin
 from flask.ext.login import LoginManager,UserMixin,AnonymousUser,login_user,logout_user,current_user,login_required, make_secure_token
 
 import datetime
-#from models import db
 from models import *
 
 db  = SQLAlchemy()
@@ -37,10 +36,7 @@ class Wiki(db.Model):
 pages_tags = db.Table('pages_tags',
                         db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')),
                         db.Column('page_id', db.Integer, db.ForeignKey('pages.id')),
-#                        db.Column('page', uselist = False, backref = db.backref(primaryjoin)
-#                        db.Column('page', uselist=False, foregin_keys = 'tag_id')
                      )
-
 
 class Page(db.Model):
     __tablename__ = "pages"
@@ -52,20 +48,15 @@ class Page(db.Model):
     active = db.Column(db.Boolean)
     comment = db.Column(db.String(255))
     creation_date = db.Column(db.DateTime, default = "NOW()")
-#   active_tags = db.relationship()
-
 
     wiki = db.relationship('Wiki', backref=db.backref('pages', lazy='dynamic'), uselist=False, foreign_keys=wiki_id)
     tags = db.relationship('Tags',
                             secondary=pages_tags,
-#                            backref=db.backref('pages', uselist = False, lazy = "dynamic",primaryjoin=pages_tags.page_id == 1),
-                            backref=db.backref('pages', uselist = True, lazy = "dynamic")
+                            backref=db.backref('pages', uselist=True, lazy="dynamic")
                           )
-
 
     def __init__(self, text, user, active, comment):
         self.text = text
-#        self.user_id = user_id
         self.active = active
         self.comment = comment
         self.user_id = user.id
@@ -194,24 +185,28 @@ class Postgresql(object):
 
     # поиск страниц по тегу
     def find_page_tags(self, tags):
-#        tags = tags.replace(';?!.:@#$%^&*()-~_{}" ', '')
-#        pages = Wiki.query.filter().
         tags = [str(t.replace(';?!.:', '').strip()) for t in tags.split(',')]
-        data_tags = Tags.query.filter(Tags.tag_name.in_(tags)).all()
-#        data_tags.w
+
+        arr_tags = Tags.query.filter(Tags.tag_name.in_(tags)).all()
+        arr_id_tags = []
+
+        if arr_tags is None:
+            return None
+
+        for d in arr_tags:
+            arr_id_tags.append(d.id)
+
+        pages = Page.query.filter_by(active=1).join(pages_tags).join(Tags).filter(Tags.id.in_(arr_id_tags))
         result = []
-        for d in data_tags:
-            for page in d.pages:
-                if int(page.active) != 1:
-                    continue
-                tags = [t.tag_name for t in page.tags]
-                res = {
+        for page in pages:
+            tags = [t.tag_name for t in page.tags]
+            res = {
                     'title' : page.wiki.title,
                     'url' : page.wiki.url,
                     'text' : page.text,
                     'tags' : tags
                 }
-                result.append(res)
+            result.append(res)
         return result
 
 
@@ -219,9 +214,10 @@ class Postgresql(object):
     def find_pages(self, letter):
         letter = letter.replace(""";?!.:@#$%^&*()-~_{}"' """, '')
         letter_lower = letter.lower()
+        letter_upper = letter.upper()
         if len(letter_lower) != 1:
             return None
-        wiki = Wiki.query.filter(Wiki.title.startswith(letter_lower)).all()
+        wiki = Wiki.query.filter(db.or_(Wiki.title.startswith(letter_lower),Wiki.title.startswith(letter_upper) )).all()
         if wiki is None:
             return None
         else:

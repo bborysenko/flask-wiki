@@ -13,16 +13,11 @@ from appwiki.methods.access import access_f
 
 
 def get_url(word):
-#    try:
-#        word = word.encode('utf-8')
-#    except:
-#        pass
     url = word.strip()
     return url.replace(' ', '_')
 
 
 def get_word(url):
-#    url = url.encode('utf-8')
     return url.replace('_', ' ')
 
 
@@ -51,17 +46,9 @@ def get_form_edit(word):
         form.access.data = u'All'
         return render_template('form_create.html', form=form, word=get_url(word))
     else:
-#        return str(access_edit)
-#
-#        if access_edit is True:
-#            return 'good'
-#        else:
-#            return 'false'
-#        return str(list_access)
-
         # Вывожу форму редактирования статьи
         form = EditDataForm(request.form)
-        form.title.data = page['title']
+#        form.title.data = page['title']
         form.text.data = page['text']
         form.tags.data = ", ".join(page['tags'])
         form.url.data = page['url']

@@ -12,15 +12,15 @@ from appwiki.methods.access import access_f
 
 
 def get_url(word):
-    url = word.encode('utf-8')
-    url = url.strip()
+#    url = word.encode('utf-8')
+    url = word.strip()
     return url.replace(' ', '_')
 
 
 def save_edit(word=None):
     # Получаю статьью из БД
     page = flask.g.database.get_page(get_url(word))
-
+    url = get_url(word)
     access_edit = True
     if page is not None:
         # Проверка на права пользователя вносить правки в статью
@@ -62,8 +62,8 @@ def save_edit(word=None):
         form = EditDataForm(request.form)
         if form.validate():
             # Получение данных из формы
-            url = get_url(form.title.data)
-            title = form.title.data.strip()
+#            url = get_url(form.title.data)
+#            title = form.title.data.strip()
             text = form.text.data.strip()
             tags = form.tags.data.strip()
             comment = form.comment.data.strip()
@@ -72,7 +72,7 @@ def save_edit(word=None):
             url_page = form.url.data.strip()
             flask.g.database.update_page(url=url,
                                          url_page=url_page,
-                                         title=title,
+                                         title=None,
                                          text=text,
                                          user=current_user.login,
                                          comment=comment,

@@ -3,11 +3,11 @@ from wtforms import Form, TextField, validators, TextAreaField, SelectField, Sub
 
 
 class EditDataForm(Form):
-    title = TextField('Title', [validators.required(
-        message=u'Поле название статьи не должно быть пустым')])
+#    title = TextField('Title', [validators.required(
+#        message=u'Поле название статьи не должно быть пустым')])
     text = TextAreaField('Text')
     submit = SubmitField(default=u"Сохранить")
     comment = TextField('Comment')
     tags = TextField('Tags')
     url = HiddenField('url')
-    access = TextField('Access')
+    access = TextField('Access', [validators.required(message=u'Поле с правами доступа должно быть заполненно!')])

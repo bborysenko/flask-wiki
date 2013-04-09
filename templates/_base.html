@@ -106,7 +106,7 @@
                 
                 <div>
                   <div style="width:300px;float:left;margin:0;padding:0;">
-                    <input autocomplete="off" type="text" {% if search %} value="{{ search }}" {% else  %} value="Поиск" {% endif %}id="search" onBlur="focus_false(this)" onFocus="focus_true(this)" name="search"/>
+                    <input autocomplete="off" type="text" {% if search_text %} value="{{ search_text }}" {% else  %} value="Поиск" {% endif %}id="search" onBlur="focus_false(this)" onFocus="focus_true(this)" name="search"/>
                   </div>
                   <div style="width:30px;text-align:left;margin:0;padding:0;gackground-color:#0f0;float:left;">
                     <input type="submit" value=""/>

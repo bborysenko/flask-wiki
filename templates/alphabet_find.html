@@ -6,6 +6,9 @@
   <div class="title">
     {{ search }}
   </div>
+
+  <hr class="line">
+
   {% if pages %}
     {% for page in pages %}
       <div class="text">
@@ -13,8 +16,6 @@
             <a href="/wiki/{{page.url}}">{{page.title|title}}</a>
           </div>
           
-          <hr class="line">
-
           <div style="color:blue;font-size:12px;">
             Теги:
             {% for d in page.tags %}
