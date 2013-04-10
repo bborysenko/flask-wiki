@@ -10,7 +10,6 @@ from appwiki.methods.access import access_f
 
 
 def get_url(word):
-#    word = word.encode('utf-8')
     url = word.strip()
     return url.replace(' ', '_')
 
@@ -21,6 +20,8 @@ def get_form_history(word=None):
     if page is not None:
         # Проверка на права пользователя вносить правки в статью
         access_edit = access_f(page['access'], current_user)
+    if current_user.is_admin():
+         access_edit = True
 
     if current_user.is_authenticated() is False or access_edit is False:
         return render_template('page.html',
