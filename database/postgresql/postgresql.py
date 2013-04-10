@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """ Работа с Postgresql через SQLAlchemy """
+#from flask import current_app
+import flask
 
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin
@@ -8,11 +10,13 @@ from flask.ext.login import LoginManager,UserMixin,AnonymousUser,login_user,logo
 import datetime
 from models import *
 
+from appwiki.conf import *
+
 db  = SQLAlchemy()
 
-
 class Wiki(db.Model):
-    __tablename__ = "wiki"
+    __tablename__ = PREFIX + "wiki"
+    __bind_key__ = 'psql'
     id = db.Column(db.Integer, primary_key = True)
     url = db.Column(db.String(255))
     title = db.Column(db.String(255))
@@ -33,14 +37,15 @@ class Wiki(db.Model):
         self.user_id = user.id
 
 
-pages_tags = db.Table('pages_tags',
+pages_tags = db.Table( PREFIX + 'pages_tags',
                         db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')),
                         db.Column('page_id', db.Integer, db.ForeignKey('pages.id')),
+                        info={'bind_key': 'psql'}
                      )
 
 class Page(db.Model):
-    __tablename__ = "pages"
-
+    __tablename__ = PREFIX + "pages"
+    __bind_key__ = 'psql'
     id = db.Column(db.Integer, primary_key = True)
     wiki_id = db.Column(db.Integer, db.ForeignKey('wiki.id'))
     text = db.Column(db.Text)
@@ -67,7 +72,8 @@ class Page(db.Model):
 
 
 class Tags(db.Model):
-    __tablename__ = 'tags'
+    __tablename__ = PREFIX + 'tags'
+    __bind_key__ = 'psql'
     id = db.Column(db.Integer, primary_key=True)
     tag_name = db.Column(db.String(100))
 

@@ -1,11 +1,17 @@
 from mongodb.mongodb import MongoDB
 from postgresql.postgresql import Postgresql
 
+from flask import current_app
+from appwiki.conf import *
 
-def get_database_object(name, host, port, database):
-    if name == 'mongodb':
-        obj = MongoDB(host, port, database)
-        return obj
+def get_database_object( dbname ):
+    if dbname == 'mongodb':
+#        obj = MongoDB(host, port, database)
+#        return obj
+        pass
     else:
+        current_app.config['SQLALCHEMY_BINDS'] = {
+            'psql' : 'postgresql://' + USER + ':' + PASSWORD + '@' + HOST + '/' + DATABASE
+        }
         obj = Postgresql()
         return obj
