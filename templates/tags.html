@@ -2,7 +2,7 @@
 {% block title %}Index{% endblock %}
 {% block content %}
   <div class="title">
-    Выборка статей с тегами: {{tags}}. 
+    Выборка статей с тегом(ми): {{tags}}. 
   </div>
   <hr class="line">
   {% if pages %}
@@ -11,9 +11,11 @@
         <div style="color:black;font-size:18px;">
           <a href="/wiki/{{page.url}}">{{page.title|title}}</a>
         </div>
-        <div>
-          {{page.text}}
-        </div>
+        
+        <div style="color:blue;font-size:12px;">                             
+            Дата: {{page.creation_date}}                                     
+        </div> 
+        
         <div style="color:blue;font-size:12px;">
           Теги:
           {#{page.tags}#}

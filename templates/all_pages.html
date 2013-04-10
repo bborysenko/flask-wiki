@@ -10,18 +10,21 @@
   {% if pages %}
     {% for page in pages %}
       <div class="text">
-        <div style="color:black;font-size:18px;">
+        <div style="color:blue;font-size:18px;">
           <a href="/wiki/{{page.url}}">{{page.title|title}}</a>
         </div>
         <div>
-          {#{page.text}#}
         </div>
+        
         <div style="color:blue;font-size:12px;">
-          Теги:
-          {#{page.tags}#}
-          {% for d in page.tags %}
-            <a href="/wiki/tags/{{d}}">{{d}}</a>  
-          {% endfor %}                     
+            Дата: {{page.creation_date}}
+        </div>
+        
+        <div style="color:blue;font-size:12px;">
+            Теги:
+            {% for d in page.tags %}
+              <a href="/wiki/tags/{{d}}">{{d}}</a>  
+            {% endfor %}   
         </div>
       </div>
     {% endfor %}

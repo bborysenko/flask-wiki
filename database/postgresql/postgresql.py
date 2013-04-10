@@ -47,9 +47,13 @@ class Page(db.Model):
     user_id = db.Column(db.Integer)
     active = db.Column(db.Boolean)
     comment = db.Column(db.String(255))
-    creation_date = db.Column(db.DateTime, default = "NOW()")
+    creation_date = db.Column(db.DateTime, default = 'NOW()')
 
-    wiki = db.relationship('Wiki', backref=db.backref('pages', lazy='dynamic'), uselist=False, foreign_keys=wiki_id)
+    wiki = db.relationship('Wiki',
+                           backref=db.backref('pages', lazy='dynamic', order_by = creation_date),
+                           uselist=False,
+                           foreign_keys=wiki_id
+                          )
     tags = db.relationship('Tags',
                             secondary=pages_tags,
                             backref=db.backref('pages', uselist=True, lazy="dynamic")
@@ -86,8 +90,8 @@ class Postgresql(object):
                         'title': wiki.title,
                         'url': wiki.url,
                         'tags' : [t.tag_name for t in wiki.page.tags],
-                        'creation_date' : wiki.creation_date,
-                        'modify_date' : wiki.page.creation_date
+                        'creation_date' : str(wiki.creation_date)[0:-7],
+                        'modify_date' : str(wiki.page.creation_date)[0:-7]
                     }
 
 
@@ -152,7 +156,7 @@ class Postgresql(object):
             page = {
                 'text' : d.text,
                 'title' : wiki.title,
-                'creation_date' : d.creation_date,
+                'creation_date' : str(d.creation_date)[0:-7],
                 'public' : public,
                 'size' : len(d.text),
                 'user' :  User.query.filter_by(id=d.user_id).first().login,
@@ -177,9 +181,8 @@ class Postgresql(object):
     def set_activity_history( self, url, page_id ):
         wiki = Wiki.query.filter_by(url = url).first()
         wiki.page.active = 0
-
-        page = Page.query.filter_by(id = int(page_id)).first()
-        page.active = 1
+        db.session.query(Page).filter(Page.id == int(page_id)).update({'active': 1})
+#        db.session.query(Wiki).filter_by(url = url).update({'page.active':1}).first()
         db.session.commit()
 
 
@@ -204,7 +207,8 @@ class Postgresql(object):
                     'title' : page.wiki.title,
                     'url' : page.wiki.url,
                     'text' : page.text,
-                    'tags' : tags
+                    'tags' : tags,
+                    'creation_date' : str(page.creation_date)[0:10]
                 }
             result.append(res)
         return result
@@ -227,7 +231,8 @@ class Postgresql(object):
                 res = {
                         'title' : d.title,
                         'url' : d.url,
-                        'tags' : tags
+                        'tags' : tags,
+                        'creation_date' : str(d.page.creation_date)[0:10]
                     }
                 result.append(res)
             return result
@@ -248,7 +253,8 @@ class Postgresql(object):
                 'title' : d.title,
                 'url' : d.url,
                 'text' : d.page.text,
-                'tags' : tags
+                'tags' : tags,
+                'creation_date' : str(d.page.creation_date)[0:10]
             }
             result.append(res)
         return result

@@ -13,6 +13,10 @@ def get_url(word):
 
 def save_history(word):
     page_id = request.form['history']
+
+    page = flask.g.database.get_page(get_url(word))
+    if page is None:
+        return None
     access_edit = True
         # Проверка на права пользователя вносить правки в статью
     access_edit = access_f(page['access'], current_user)
