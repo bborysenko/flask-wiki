@@ -4,8 +4,8 @@ from postgresql.postgresql import Postgresql
 from flask import current_app
 from appwiki.conf import *
 
-def get_database_object( dbname ):
-    if dbname == 'mongodb':
+def get_database_object( name ):
+    if name == 'mongodb':
 #        obj = MongoDB(host, port, database)
 #        return obj
         pass

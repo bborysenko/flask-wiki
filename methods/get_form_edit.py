@@ -30,8 +30,9 @@ def get_form_edit(word):
     if page is not None:
         # Проверка на права пользователя вносить правки в статью
         access_edit = access_f(page['access'], current_user)
-    if current_user.is_admin():
-        access_edit = True
+        if current_user.is_authenticated():
+            if current_user.is_admin():
+                access_edit = True
 
     if current_user.is_authenticated() is False or access_edit is False:
         return render_template('page.html',

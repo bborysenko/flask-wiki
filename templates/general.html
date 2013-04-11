@@ -1,6 +1,33 @@
 {% extends "_base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
+  <script type="text/javascript">
+    var $dialog; 
+    $(document).ready(function () {
+        $dialog = $('<div></div>').html('Название <input type="text" value=""  style="width:380px;" id="page_name">')
+                      .dialog({
+                            autoOpen: false,
+                            title: 'Создание страницы',
+                            modal: true, 
+                            buttons: {
+                                "Ok": function() {
+                                    if( $('#page_name').val() == '')
+                                      return false;
+                                    window.location.replace( "http://" + window.location.hostname +"/wiki/" + $('#page_name').val() );
+                                },
+                                "Cancel": function() {
+                                    $(this).dialog("close");
+                                }
+                            }
+                            });
+        $dialog.dialog( "option", "width", 500 );
+                  $('#create').click(
+                      function () {
+                        $dialog.dialog('open');
+                        return false; ////cancel eventbubbeling
+                      });
+                  });
+</script>
 	<div class="title">
 		Заглавная страница: «Живые встречи» Wiki
 	</div>
@@ -8,7 +35,7 @@
 	<hr class="line">
 
 	<div class="text">
-		
+    Для создания страницы нажмите <a id="create" href="#">Создать</a>		
 	</div>
 {% endblock %}
 
