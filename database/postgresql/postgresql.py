@@ -7,8 +7,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin
 from flask.ext.login import LoginManager,UserMixin,AnonymousUser,login_user,logout_user,current_user,login_required, make_secure_token
 
-import datetime
-from models import *
+import models
+from appwiki.methods.access import access_f
 
 from appwiki.conf import *
 
@@ -28,13 +28,15 @@ class Wiki(db.Model):
                             uselist=False
                         )
 
+    access_show = db.Column(db.String(250))
 
 
-    def __init__(self, url, title, access, user):
+    def __init__(self, url, title, access, user, access_show):
         self.url = url
         self.title = title
         self.access = access
         self.user_id = user.id
+        self.access_show = access_show
 
 
 pages_tags = db.Table( PREFIX + 'pages_tags',
@@ -51,6 +53,7 @@ class Page(db.Model):
     text = db.Column(db.Text)
     user_id = db.Column(db.Integer)
     active = db.Column(db.Boolean)
+    access_show = db.Column(db.String(250))
     comment = db.Column(db.String(255))
     creation_date = db.Column(db.DateTime, default = 'NOW()')
 
@@ -92,6 +95,7 @@ class Postgresql(object):
                 return None
             else:
                 return {'access': wiki.access,
+                        'access_show' : wiki.access_show,
                         'text' : wiki.page.text,
                         'title': wiki.title,
                         'url': wiki.url,
@@ -101,12 +105,13 @@ class Postgresql(object):
                     }
 
 
-    def insert_page( self, url, title, text, comment, user, tags, access ):
-        user = User.query.filter_by(login=user).first()
+    def insert_page( self, url, title, text, comment, user, tags, access, access_show ):
+        user = models.User.query.filter_by(login=user).first()
         wiki = Wiki(url = url,
                     title = title,
                     access = access,
-                    user  = user
+                    user  = user,
+                    access_show = access_show
                    )
         page = Page(text = text,
                     user = user,
@@ -126,16 +131,22 @@ class Postgresql(object):
         db.session.commit()
 
 
-    def update_page( self, url_page, url, title, text, comment, tags, user, access ):
-        user = User.query.filter_by(login=user).first()
+    def update_page( self, url_page, url, title, text, comment, tags, user, access, access_show, active ):
+        user = models.User.query.filter_by(login=user).first()
         wiki = Wiki.query.filter_by(url = str(url)).first()
+        act = 1
+        if active is False:
+            act = 0
         page = Page(text = text,
                     user = user,
-                    active = 1,
+                    active = act,
                     comment = comment
                 )
-        wiki.page.active = 0
+        if active is True:
+            wiki.page.active = 0
+
         wiki.access = access
+        wiki.access_show = access_show
         page.wiki = wiki
 
         tags = [str(t.replace(';?!.:', '').strip()) for t in tags.split(',')]
@@ -155,23 +166,31 @@ class Postgresql(object):
         if wiki is None:
             return None
         pages_list = []
+        access_show = access_f(wiki.access_show, current_user)
+        if current_user.is_authenticated():
+            if current_user.is_admin():
+                access_show = True
+        if access_show is False:
+            return None
         for d in wiki.pages:
             public = False
             if d.active == 1:
                 public = True
+            if access_show is False:
+                continue
             page = {
                 'text' : d.text,
                 'title' : wiki.title,
                 'creation_date' : str(d.creation_date)[0:-7],
                 'public' : public,
                 'size' : len(d.text),
-                'user' :  User.query.filter_by(id=d.user_id).first().login,
+                'user' :  models.User.query.filter_by(id=d.user_id).first().login,
                 'comment' : d.comment,
                 '_id' : d.id
             }
             pages_list.append(page)
 
-        return {'title': wiki.title, 'posts':pages_list}
+        return {'title': wiki.title, 'posts':pages_list, 'access_show': wiki.access_show, 'access': wiki.access}
 
 
     # получает пост с id == id_page из истории

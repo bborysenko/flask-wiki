@@ -23,9 +23,6 @@ def get_word(url):
 
 def get_form_edit(word):
     page = flask.g.database.get_page(get_url(word))
-
-#    word = get_url(word)
-
     access_edit = True
     if page is not None:
         # Проверка на права пользователя вносить правки в статью
@@ -47,6 +44,7 @@ def get_form_edit(word):
         form = CreateDataForm()
         form.title.data = get_word(word)
         form.access.data = u'All'
+        form.access_show.data = u'All'
         return render_template('form_create.html', form=form, word=get_url(word))
     else:
         # Вывожу форму редактирования статьи
@@ -56,5 +54,7 @@ def get_form_edit(word):
         form.tags.data = ", ".join(page['tags'])
         form.url.data = page['url']
         form.access.data = page['access']
+        form.access_show.data = page['access_show']
+        form.active.data = True
 #        form.tags.data  = page['tags']
         return render_template('form_edit.html', form=form, navigation=True, edit = True, word=get_url(word))

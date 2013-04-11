@@ -3,13 +3,18 @@
 {% block content %}
   <form method="post" action="/wiki/{{word}}/edit">
       {{ form.url }}
-			{% if errors %}
+			{% if form.errors %}
 				<div class="errors">
-					{% for error in errors %}
-						<div class="error">
-							Ошибка: {{ error }}
-						</div>
-					{% endfor %}
+              {% if form.errors.access %}
+                <div class="error">
+                  Ошибка: {{ form.errors.access[0] }}
+                </div>
+              {% endif %}
+            {% if form.errors.access_show %}
+              <div class="error">
+                Ошибка: {{ form.errors.access_show[0] }}
+              </div>
+            {% endif %}
 				</div>		
 			{% endif %}		
 
@@ -19,29 +24,73 @@
 			
 			<hr class="line">
 			
-			<div class="block">
-				{#{ form.title(class = "text_field_line") }#}
+      <div class="block">
+        <div style="width:120px;float:left;">                                
+          Права на правку                                                    
+        </div>
+        <div>
+          {{ form.access(class="text_field_line") }}
+        </div>
       </div>
+
 
       <div class="block">
-        {{ form.access(class="text_field_line") }}
+        <div style="width:120px;float:left;">                                
+          Права на просмотр
+        </div>
+        <div>
+          {{ form.access_show(class="text_field_line") }}
+        </div>
       </div>
 
-			<div class="block">
-				{{ form.text(class = "text_field") }}
+
+      <div class="block">
+        <div style="width:120px;float:left;">                                
+          Опубликовать
+        </div>
+        <div style="text-align:left;">
+          {{ form.active }}
+        </div>
+      </div>
+
+  <div class="block">
+    <div id="wmd-button-bar" class="wmd-panel"></div>
+      {{ form.text(class = "text_field", id="wmd-input") }}
+  </div>                                          
+
+{#      <div class="block">
+        <div class="wmd-panel">
+          {{ form.text(class = "text_field wmd-input wmd-panel") }}
+        </div>
 			</div>
-			
-			<div class="block">
-        {{ form.tags(class = "text_field_line") }}
+#}
+      <script type="text/javascript" src="/static/wiki/wmd/wmd.js"></script>
+
+      <div class="block">
+        <div style="width:120px;float:left;">                                
+          Теги                                                   
+        </div> 
+        <div>
+          {{ form.tags(class = "text_field_line") }}
+        </div>
 			</div>
 
-			<div class="block">
-				{{ form.comment( class = "text_field_line" ) }}
+      <div class="block">
+        <div style="width:120px;float:left;">                                
+          Комментарий                                          
+        </div>
+        <div>
+				  {{ form.comment( class = "text_field_line" ) }}
+        </div>
 			</div>
 
 			<div class="block">
 				<input type="submit" value="Сохранить"/>
 			</div>
-	 </form>
+    </form>
+    <script>
+      $('#form').unbind('submit');
+//      console.log( "qwerty" )
+    </script>
 {% endblock %}
 

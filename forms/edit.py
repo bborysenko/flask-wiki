@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-0
-from wtforms import Form, TextField, validators, TextAreaField, SelectField, SubmitField, HiddenField
+from wtforms import Form, TextField, validators, BooleanField, TextAreaField, SubmitField, HiddenField
 
 
 class EditDataForm(Form):
@@ -10,4 +10,6 @@ class EditDataForm(Form):
     comment = TextField('Comment')
     tags = TextField('Tags')
     url = HiddenField('url')
-    access = TextField('Access', [validators.required(message=u'Поле с правами доступа должно быть заполненно!')])
+    access = TextField('Access', [validators.required(message=u'Вы не внесли права  на правку страницы')])
+    access_show = TextField('AccessShow', [validators.required(message=u'Вы не внесли права на просмотр страницы')])
+    active = BooleanField('Active')
