@@ -12,6 +12,7 @@ def get_url(word):
     return url.replace(' ', '_')
 
 
+
 def view(word=None):
     if word is None:
         return render_template('general.html')

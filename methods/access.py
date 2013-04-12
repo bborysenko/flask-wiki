@@ -13,6 +13,7 @@ def access_f(str_access, current_user):
         for d in list_access:
             if d.strip().lower() == 'all':
                 return True
+        return False
 
 
     for d in list_access:

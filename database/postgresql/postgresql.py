@@ -172,10 +172,11 @@ class Postgresql(object):
 #                access_show = True
 #        if access_show is False:
 #            return None
+
 #        wiki.x
         for d in wiki.pages:
             public = False
-            if d.active ==True :
+            if d.active == True :
                 public = True
 #            if access_show is False:
 #                continue
@@ -208,7 +209,7 @@ class Postgresql(object):
     # Делает активной статью в истории
     def set_activity_history( self, url, page_id ):
         wiki = Wiki.query.filter_by(url = url).first()
-        wiki.page.active = True
+        wiki.page.active = False
         db.session.query(Page).filter(Page.id == int(page_id)).update({'active': True})
 #        db.session.query(Wiki).filter_by(url = url).update({'page.active':1}).first()
         db.session.commit()
