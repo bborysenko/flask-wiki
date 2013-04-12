@@ -317,3 +317,6 @@ class Postgresql(object):
                         alphabet_ru[letter] = 0
         return {'en':alphabet_en, 'ru':alphabet_ru}
 #        wiki = Wiki.query.filter(Wiki.title.startswith(letters)).group_by(Wiki.title).all()
+
+    def get_result_search(self, str_search):
+        return None
