@@ -1,4 +1,4 @@
-from mongodb.mongodb import MongoDB
+#from mongodb.mongodb import MongoDB
 from postgresql.postgresql import Postgresql
 
 from flask import current_app

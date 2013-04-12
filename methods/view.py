@@ -20,7 +20,7 @@ def view(word=None):
         page = flask.g.database.get_page(get_url(word))
         if page is None:
             # Редирект на создание страницы
-            return redirect(url_for('.get_form_edit', word=get_url(word)))
+            return redirect(url_for('.view_form_edit', word=get_url(word)))
         else:
             # Вывод страницы
             access_show = True

@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="/wiki/static/stylewiki.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='stylewiki.css' ) }}">
     
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
     
-    <link rel="stylesheet" type="text/css" href="/wiki/staticwmd.css" />
-    <script type="text/javascript" src="/wiki/static/showdown.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='wmd.css' ) }}"  {#href="/wiki/staticwmd.css"#} />
+    <script type="text/javascript" src="{{ url_for( '.static', filename='showdown.js' ) }}"></script>
 <!--    <script type="text/javascript" src="/static/wiki/wmd/wmd.js"></script>
 -->
     <title>{% block title  %}{% endblock %}</title>
@@ -59,11 +59,11 @@
 			</div>
 			<div id="left_panel">
 				<ul id="left_menu">
-					<li><a href="/wiki">Заглавная страница</a></li>
-					<li><a href="/wiki/alphabet">Алфавитный указатель</a></li>
+          <li><a href="{{ url_for('.view') }}">Заглавная страница</a></li>
+          <li><a href="{{ url_for('.view_alphabet') }}">Алфавитный указатель</a></li>
       {#		<li><a href="/wiki/random">Случайная статья</a></li>
       #}
-          <li><a href="/wiki/all">Все статьи</a></li>
+          <li><a href="{{ url_for('.view_all_pages') }}">Все статьи</a></li>
       {#   
           <li><a href="/wiki/favorites">Избранные статьи</a></li>
 					<li><a href="/wiki/latter">Последние статьи</a></li>
@@ -103,9 +103,9 @@
 					{% if navigation %}
 						<ul id="navigation">
               {% if current_user.is_authenticated() %} 
-                <li><a {% if read %} id="active" {% endif %} href="/wiki/{{word}}">Чтение</a></li>
-                <li><a {% if edit %} id="active" {% endif %} href="/wiki/{{word}}/edit">Правка</a></li>
-                <li><a {% if history %} id="active" {% endif %}href="/wiki/{{word}}/history">История</a></li>
+              <li><a {% if read %} id="active" {% endif %} href="{{ url_for('.view', word=word) }}"{#href="/wiki/{{word}}"#}>Чтение</a></li>
+                <li><a {% if edit %} id="active" {% endif %} href="{{ url_for('.view_form_edit', word=word) }}">Правка</a></li>
+                <li><a {% if history %} id="active" {% endif %}href="{{ url_for('.view_form_history', word=word) }}">История</a></li>
       {#         <li><a href="/wiki/{{word}}/forum">Обсуждение</a></li>
       #}      {% endif %}
 						</ul>
