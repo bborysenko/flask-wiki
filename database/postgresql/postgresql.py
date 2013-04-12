@@ -142,7 +142,7 @@ class Postgresql(object):
                     comment = comment
                 )
         if active is True:
-            wiki.page.active = True
+            wiki.page.active = False
 #        wiki.x
         wiki.access = access
         wiki.access_show = access_show
@@ -154,7 +154,7 @@ class Postgresql(object):
                 tag = Tags(t)
             page.tags.append(tag)
 
-        wiki.page = page
+        page.wiki = wiki
 
         db.session.add(page)
         db.session.commit()
@@ -166,18 +166,19 @@ class Postgresql(object):
         if wiki is None:
             return None
         pages_list = []
-        access_show = access_f(wiki.access_show, current_user)
-        if current_user.is_authenticated():
-            if current_user.is_admin():
-                access_show = True
-        if access_show is False:
-            return None
+#        access_show = access_f(wiki.access_show, current_user)
+#        if current_user.is_authenticated():
+#            if current_user.is_admin():
+#                access_show = True
+#        if access_show is False:
+#            return None
+#        wiki.x
         for d in wiki.pages:
             public = False
-            if d.active == True:
+            if d.active ==True :
                 public = True
-            if access_show is False:
-                continue
+#            if access_show is False:
+#                continue
             page = {
                 'text' : d.text,
                 'title' : wiki.title,
