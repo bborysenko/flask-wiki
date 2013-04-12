@@ -4,6 +4,7 @@ import flask
 
 from flask.ext.login import LoginManager, UserMixin, AnonymousUser, login_user, logout_user, current_user, login_required, make_secure_token
 
+
 from methods.view import view
 from methods.save_edit import save_edit
 from methods.get_form_edit import get_form_edit
