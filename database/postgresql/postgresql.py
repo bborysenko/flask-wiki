@@ -10,13 +10,12 @@ from flask.ext.login import LoginManager,UserMixin,AnonymousUser,login_user,logo
 import models
 from appwiki.methods.access import access_f
 
-from appwiki.conf import *
-
 db  = SQLAlchemy()
+#PREFIX = ""
 
 class Wiki(db.Model):
-    __tablename__ = PREFIX + "wiki"
-    __bind_key__ = 'psql'
+    __tablename__ = "wiki"
+    __bind_key__ = 'wiki'
     id = db.Column(db.Integer, primary_key = True)
     url = db.Column(db.String(255))
     title = db.Column(db.String(255))
@@ -39,15 +38,15 @@ class Wiki(db.Model):
         self.access_show = access_show
 
 
-pages_tags = db.Table( PREFIX + 'pages_tags',
+pages_tags = db.Table( 'pages_tags',
                         db.Column('tag_id', db.Integer, db.ForeignKey('tags.id')),
                         db.Column('page_id', db.Integer, db.ForeignKey('pages.id')),
-                        info={'bind_key': 'psql'}
+                        info={'bind_key': 'wiki'}
                      )
 
 class Page(db.Model):
-    __tablename__ = PREFIX + "pages"
-    __bind_key__ = 'psql'
+    __tablename__ = "pages"
+    __bind_key__ = 'wiki'
     id = db.Column(db.Integer, primary_key = True)
     wiki_id = db.Column(db.Integer, db.ForeignKey('wiki.id'))
     text = db.Column(db.Text)
@@ -75,15 +74,13 @@ class Page(db.Model):
 
 
 class Tags(db.Model):
-    __tablename__ = PREFIX + 'tags'
-    __bind_key__ = 'psql'
+    __tablename__ = 'tags'
+    __bind_key__ = 'wiki'
     id = db.Column(db.Integer, primary_key=True)
     tag_name = db.Column(db.String(100))
 
     def __init__(self, tag_name):
         self.tag_name = tag_name
-
-#db.create_all()
 
 class Postgresql(object):
 
@@ -92,6 +89,7 @@ class Postgresql(object):
             return None
         else:
             wiki = Wiki.query.filter_by(url = url).first()
+#            wiki.x
             if wiki is None:
                 return None
             else:
@@ -145,10 +143,9 @@ class Postgresql(object):
                 )
         if active is True:
             wiki.page.active = True
-
+#        wiki.x
         wiki.access = access
         wiki.access_show = access_show
-        page.wiki = wiki
 
         tags = [t.replace(';?!.:', '').strip() for t in tags.split(',')]
         for t in tags:
@@ -156,6 +153,8 @@ class Postgresql(object):
             if tag is None:
                 tag = Tags(t)
             page.tags.append(tag)
+
+        wiki.page = page
 
         db.session.add(page)
         db.session.commit()

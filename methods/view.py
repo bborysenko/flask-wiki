@@ -38,4 +38,5 @@ def view(word=None):
                                             read = True
                                         )
             page['text'] = markdown2.markdown(page['text'])
+#            page.x
             return render_template('page.html', page=page, navigation=True, read = True, word=get_url(word))

@@ -23,7 +23,7 @@ from methods.view_pages_latter import view_pages_latter
 
 from database.database import get_database_object
 
-current_app.config['hello'] = 'hello'
+#current_app.config['hello'] = 'hello'
 
 wiki = Blueprint('appwiki', __name__,
                  template_folder='templates', static_folder='static')
