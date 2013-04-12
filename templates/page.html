@@ -1,24 +1,26 @@
 {% extends "_base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-  <div style="color:blue;font-size:12px;text-align:right">
     {% if message %}
       <div class="errors" style="text-align:left;">
         {{ message }}
       </div>
-    {% endif %}
-    Teги: 
-    {% for d in page.tags %}
-      <a href="/wiki/tags/{{d}}">{{d}}</a>
-    {% endfor %}
-  </div>
-  <div class="title">
-		{{ page.title }}
-	</div>
+    {% else %}
+      <div style="color:blue;font-size:12px;text-align:right">
+        Teги:
+        {% for d in page.tags %}
+          <a href="/wiki/tags/{{d}}">{{d}}</a>
+        {% endfor %}
+      </div>
+      
+      <div class="title">
+		    {{ page.title }}
+	    </div>
 
-	<hr class="line">
+	    <hr class="line">
 	
-	<div class="text">
-		{{ page.text|safe }}
-	</div>
+	    <div class="text">
+		    {{ page.text|safe }}
+      </div>
+    {% endif %}
 {% endblock %}

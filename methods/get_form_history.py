@@ -16,16 +16,18 @@ def get_url(word):
 
 def get_form_history(word=None):
     page = flask.g.database.get_page(get_url(word))
-    access_edit = True
+    access_edit = False
     if page is not None:
         # Проверка на права пользователя вносить правки в статью
-        access_edit = access_f(page['access'], current_user)
-    if current_user.is_admin():
-         access_edit = True
+        if current_user.is_authenticated():
+            access_edit = access_f(page['access'], current_user)
+    if current_user.is_authenticated():
+        if current_user.is_admin():
+             access_edit = True
 
     if current_user.is_authenticated() is False or access_edit is False:
         return render_template('page.html',
-                               page=page,
+                               page=None,
                                message=u"Вы не имеете прав на просмотр истории изменения страницы",
                                navigation=True,
                                word=get_url(word),

@@ -8,10 +8,13 @@
 def access_f(str_access, current_user):
     access_edit = False
 
-    if current_user.is_authenticated() is False:
-        return False
-
     list_access = str_access.split(',')
+    if current_user.is_authenticated() is False:
+        for d in list_access:
+            if d.strip().lower() == 'all':
+                return True
+
+
     for d in list_access:
         d = d.strip().lower()
         if d.find('!') == -1:
@@ -33,5 +36,5 @@ def access_f(str_access, current_user):
 #        for item in SADMIN:
 #            if item == current_user.login.lower():
 #                access_edit = True
-
+#    access_edit2.x
     return access_edit

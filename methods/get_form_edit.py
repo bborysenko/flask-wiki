@@ -33,7 +33,7 @@ def get_form_edit(word):
 
     if current_user.is_authenticated() is False or access_edit is False:
         return render_template('page.html',
-                               page=page,
+                               page=None,
                                message=u"Вы не имеете прав на редaкатирование страницы",
                                navigation=True,
                                edit = True,

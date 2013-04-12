@@ -23,6 +23,8 @@ def view(word=None):
             return redirect(url_for('.get_form_edit', word=get_url(word)))
         else:
             # Вывод страницы
+            access_show = True
+#            if current_user.is_authenticated():
             access_show = access_f(page['access_show'], current_user)
             if current_user.is_authenticated():
                 if current_user.is_admin():
@@ -33,7 +35,7 @@ def view(word=None):
                                             message=u"Вы не имеете прав на просмотр страницы",
                                             navigation=True,
                                             word=word,
-                                            edit = True
+                                            read = True
                                         )
             page['text'] = markdown2.markdown(page['text'])
             return render_template('page.html', page=page, navigation=True, read = True, word=get_url(word))

@@ -119,7 +119,7 @@ class Postgresql(object):
                     comment = comment
                 )
 
-        tags = [str(t.replace(';?!.:', '').strip()) for t in tags.split(',')]
+        tags = [t.replace(';?!.:', '').strip() for t in tags.split(',')]
         for t in tags:
             tag = Tags.query.filter_by(tag_name=t).first()
             if tag is None:
@@ -133,7 +133,7 @@ class Postgresql(object):
 
     def update_page( self, url_page, url, title, text, comment, tags, user, access, access_show, active ):
         user = models.User.query.filter_by(login=user).first()
-        wiki = Wiki.query.filter_by(url = str(url)).first()
+        wiki = Wiki.query.filter_by(url = url).first()
         act = 1
         if active is False:
             act = 0
@@ -149,7 +149,7 @@ class Postgresql(object):
         wiki.access_show = access_show
         page.wiki = wiki
 
-        tags = [str(t.replace(';?!.:', '').strip()) for t in tags.split(',')]
+        tags = [t.replace(';?!.:', '').strip() for t in tags.split(',')]
         for t in tags:
             tag = Tags.query.filter_by(tag_name=t).first()
             if tag is None:
@@ -196,6 +196,8 @@ class Postgresql(object):
     # получает пост с id == id_page из истории
     def get_page_history(self, url, page_id):
         wiki = Wiki.query.filter_by(url = url).first()
+        if wiki is None:
+            return None
         for d in wiki.pages:
             if int(page_id) == d.id:
                 return { 'text' : d.text, 'title' : wiki.title }
@@ -213,7 +215,7 @@ class Postgresql(object):
 
     # поиск страниц по тегу
     def find_page_tags(self, tags):
-        tags = [str(t.replace(';?!.:', '').strip()) for t in tags.split(',')]
+        tags = [t.replace(';?!.:', '').strip() for t in tags.split(',')]
 
         arr_tags = Tags.query.filter(Tags.tag_name.in_(tags)).all()
         arr_id_tags = []
