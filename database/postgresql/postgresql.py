@@ -24,7 +24,7 @@ class Wiki(db.Model):
     user_id = db.Column(db.Integer)
     creation_date = db.Column(db.DateTime, default = "NOW()")
     page = db.relationship("Page",
-                            primaryjoin="and_(Page.wiki_id==Wiki.id, Page.active==1)",
+                            primaryjoin="and_(Page.wiki_id==Wiki.id, Page.active==True)",
                             uselist=False
                         )
 
@@ -83,6 +83,7 @@ class Tags(db.Model):
     def __init__(self, tag_name):
         self.tag_name = tag_name
 
+#db.create_all()
 
 class Postgresql(object):
 
@@ -115,7 +116,7 @@ class Postgresql(object):
                    )
         page = Page(text = text,
                     user = user,
-                    active = 1,
+                    active = True,
                     comment = comment
                 )
 
@@ -134,16 +135,16 @@ class Postgresql(object):
     def update_page( self, url_page, url, title, text, comment, tags, user, access, access_show, active ):
         user = models.User.query.filter_by(login=user).first()
         wiki = Wiki.query.filter_by(url = url).first()
-        act = 1
+        act = True
         if active is False:
-            act = 0
+            act = False
         page = Page(text = text,
                     user = user,
                     active = act,
                     comment = comment
                 )
         if active is True:
-            wiki.page.active = 0
+            wiki.page.active = True
 
         wiki.access = access
         wiki.access_show = access_show
@@ -174,7 +175,7 @@ class Postgresql(object):
             return None
         for d in wiki.pages:
             public = False
-            if d.active == 1:
+            if d.active == True:
                 public = True
             if access_show is False:
                 continue
@@ -207,8 +208,8 @@ class Postgresql(object):
     # Делает активной статью в истории
     def set_activity_history( self, url, page_id ):
         wiki = Wiki.query.filter_by(url = url).first()
-        wiki.page.active = 0
-        db.session.query(Page).filter(Page.id == int(page_id)).update({'active': 1})
+        wiki.page.active = True
+        db.session.query(Page).filter(Page.id == int(page_id)).update({'active': True})
 #        db.session.query(Wiki).filter_by(url = url).update({'page.active':1}).first()
         db.session.commit()
 
@@ -226,7 +227,7 @@ class Postgresql(object):
         for d in arr_tags:
             arr_id_tags.append(d.id)
 
-        pages = Page.query.filter_by(active=1).join(pages_tags).join(Tags).filter(Tags.id.in_(arr_id_tags))
+        pages = Page.query.filter_by(active=True).join(pages_tags).join(Tags).filter(Tags.id.in_(arr_id_tags))
         result = []
         for page in pages:
             tags = [t.tag_name for t in page.tags]
