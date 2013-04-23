@@ -379,3 +379,99 @@ ul#left_menu li a{
 	padding-bottom:3px;
 
 }
+/* Стили для диалогового окан выбора пользователей */
+.left_panel_header{
+    text-align:left;                                               
+    margin-left:-15px;                       
+    font-width:600;                                                
+    color:black;                                                   
+    background-color:#F7F7F7;                                      
+    margin-top:-10px;                                              
+    height:35px;                                                   
+    padding-top:15px;                                              
+    padding-left:10px;                                             
+    border-bottom:1px solid #DAE1E8;
+}
+
+.header_users_left{
+    text-align:center;
+    font-weight: bold;
+    color:#45688E; 
+    height:25px; 
+    padding-top:15px;
+    margin-bottom:0px;
+    border-bottom:1px solid gray;
+}
+
+.left_users_panel{
+    border-right:1px solid gray;                                   
+    margin-bottom:5px;                                           
+    padding-left:10px;                                             
+    color:#45688E;                                               
+    font-weight:bold;
+    overflow:visible;
+}
+
+
+.left_user{
+    margin-top:5px;                                              
+    margin-bottom:5px;                                      
+    padding-left:10px;                                             
+    color:#45688E;                                               
+    font-weight:bold;                                            
+    border-bottom:1px solid gray;                                
+    height:30px;                                                 
+    padding-top:10px;
+    cursor: pointer;
+}
+
+
+/* right */
+
+.right_panel_header{
+    text-align:left;                                               
+/*    margin-right:-15px;                       
+*/    color:black;                                                   
+    background-color:#F7F7F7;                                      
+    margin-top:-10px;                                              
+    height:35px;                                                   
+    padding-top:15px;                                              
+    padding-left:10px;                                             
+    border-bottom:1px solid #DAE1E8;
+}
+
+
+.header_users_right{
+    text-align:center;
+    font-weight: bold;
+    color:#45688E; 
+    height:25px; 
+    padding-top:15px;
+    margin-bottom:0px;
+    border-bottom:1px solid gray;
+}
+
+
+.right_users_panel{
+    margin-bottom:5px;                                           
+/*    padding-left:10px;                                             
+*/    color:#45688E;                                               
+    font-weight:bold;
+    margin-left:400px;
+}
+
+
+.right_user{
+    margin-top:5px;                                              
+    margin-bottom:5px;
+/*    margin-left:30px;
+    padding-left:15px;                                             
+*/    color:#45688E;                                               
+    font-weight:bold;                                            
+    border-bottom:1px solid gray;                                
+    height:30px;                                                 
+    padding-top:10px;
+    cursor: pointer;
+}
+
+

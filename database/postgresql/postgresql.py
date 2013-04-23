@@ -1,17 +1,58 @@
 # -*- coding: utf-8 -*-
 """ Работа с Postgresql через SQLAlchemy """
 #from flask import current_app
+import os
+import commands
+
 import flask
 
 from flask_sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin
 from flask.ext.login import LoginManager,UserMixin,AnonymousUser,login_user,logout_user,current_user,login_required, make_secure_token
 
+import sphinxapi
+
 import models
 from appwiki.methods.access import access_f
 
 db  = SQLAlchemy()
-#PREFIX = ""
+
+def indexer():
+    os.system(ur"indexer --rotate --config /usr/local/etc/sphinx.conf --all")
+
+
+def get_result_search(str_search, str_text, sub = False):
+    begin_text = -1
+    end_text = -1
+    c_sim = 200
+    begin_text = str_text.find( str_search )
+    if begin_text != -1:
+        if begin_text - c_sim > 0:
+            begin_text = begin_text - c_sim
+        else:
+            begin_text = 0
+        if begin_text + c_sim + len(str_search)< len(str_text):
+            end_text = begin_text + c_sim + len(str_search)
+        else:
+            end_text = len(str_text)
+    else:
+        begin_text = 0
+        end_text = c_sim
+
+    text = str_text
+    if sub is True:
+        text = str_text[begin_text:end_text]
+    if begin_text != -1:
+        if sub is True:
+            if begin_text != 0:
+                text = "..." + text
+            if end_text < len(str_text):
+                text = text + "..."
+        begin = text.find(str_search)
+        if begin != -1:
+            text = text[0:begin] + '<span style="background-color:yellow;size:15px;">' + text[begin:begin + len(str_search)] + "</span>" + text[begin + len(str_search):-1]
+    return text
+
 
 class Wiki(db.Model):
     __tablename__ = "wiki"
@@ -89,7 +130,6 @@ class Postgresql(object):
             return None
         else:
             wiki = Wiki.query.filter_by(url = url).first()
-#            wiki.x
             if wiki is None:
                 return None
             else:
@@ -117,8 +157,9 @@ class Postgresql(object):
                     active = True,
                     comment = comment
                 )
-
-        tags = [t.replace(';?!.:', '').strip() for t in tags.split(',')]
+#        tags.x
+        tags = [t.replace(' ', '').strip() for t in tags.split(',')]
+#        tags.x
         for t in tags:
             tag = Tags.query.filter_by(tag_name=t).first()
             if tag is None:
@@ -129,8 +170,10 @@ class Postgresql(object):
         db.session.add(page)
         db.session.commit()
 
+        # Индексация
+        indexer()
 
-    def update_page( self, url_page, url, title, text, comment, tags, user, access, access_show, active ):
+    def update_page( self, url_page, url, title, text, comment, tags, user, access, access_show, active, update_title = False ):
         user = models.User.query.filter_by(login=user).first()
         wiki = Wiki.query.filter_by(url = url).first()
         act = True
@@ -143,11 +186,13 @@ class Postgresql(object):
                 )
         if active is True:
             wiki.page.active = False
+        if update_title is True:
+            wiki.title = title
 #        wiki.x
         wiki.access = access
         wiki.access_show = access_show
 
-        tags = [t.replace(';?!.:', '').strip() for t in tags.split(',')]
+        tags = [t.replace(' ', '').strip() for t in tags.split(',')]
         for t in tags:
             tag = Tags.query.filter_by(tag_name=t).first()
             if tag is None:
@@ -159,6 +204,8 @@ class Postgresql(object):
         db.session.add(page)
         db.session.commit()
 
+        # Индексация
+        indexer()
 
     # получает всю историю поста
     def get_pages_history( self, url ):
@@ -166,20 +213,10 @@ class Postgresql(object):
         if wiki is None:
             return None
         pages_list = []
-#        access_show = access_f(wiki.access_show, current_user)
-#        if current_user.is_authenticated():
-#            if current_user.is_admin():
-#                access_show = True
-#        if access_show is False:
-#            return None
-
-#        wiki.x
         for d in wiki.pages:
             public = False
             if d.active == True :
                 public = True
-#            if access_show is False:
-#                continue
             page = {
                 'text' : d.text,
                 'title' : wiki.title,
@@ -211,8 +248,10 @@ class Postgresql(object):
         wiki = Wiki.query.filter_by(url = url).first()
         wiki.page.active = False
         db.session.query(Page).filter(Page.id == int(page_id)).update({'active': True})
-#        db.session.query(Wiki).filter_by(url = url).update({'page.active':1}).first()
         db.session.commit()
+
+        # Индексация
+        indexer()
 
 
     # поиск страниц по тегу
@@ -289,10 +328,6 @@ class Postgresql(object):
         return result
 
     def get_alphabet(self):
-#        wiki = Wiki.query.filter_by(url = url).first()
-#        result = db.session.query(db.func.substr(Wiki.title, 1, 1), db.func.substr(Wiki.title(1, 1)).count()).all()
-#        result.x
-#        result = Wiki.query(Wiki.title, db.func.substr(Wiki.title, 0, 1),label("total")).all()
         result = db.session.execute("""SELECT UPPER(substring(title from 1 for 1)) AS alphabet,
                                     COUNT(substring(title from 1 for 1)) FROM wiki
                                     GROUP BY alphabet ORDER BY alphabet
@@ -320,3 +355,37 @@ class Postgresql(object):
 
     def get_result_search(self, str_search):
         return None
+        client = sphinxapi.SphinxClient()
+        client.SetServer('127.0.0.1', 3312)
+        data = client.Query(str_search)
+        arr_id_pages = [d['id'] for d in data['matches'] ]
+
+        pages = Page.query.filter_by(active=True).filter(Page.id.in_(arr_id_pages))
+
+        result = []
+        for d in pages:
+            tags = [t.tag_name for t in d.tags]
+            text = get_result_search( str_search, d.text, sub = True )
+            title = get_result_search( str_search, d.wiki.title, sub = False )
+            res = {
+                       'title' : title,
+                        'url' : d.wiki.url,
+                        'text' : text,
+                        'tags' : tags,
+                        'creation_date' : str(d.wiki.creation_date)[0:10]
+                    }
+            result.append(res)
+        return result
+
+    def get_all_users(self):
+        users = models.User.query.order_by(models.User.last_name).all()
+        result = []
+        for d in users:
+            res = {
+                'first_name' : d.first_name,
+                'last_name' : d.last_name,
+                'login' : d.login,
+                '_id' : d.id
+            }
+            result.append(res)
+        return result

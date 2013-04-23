@@ -1,9 +1,16 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, current_app
+#from jinja2.environment import Environment
+
+
+from flask import Blueprint
 import flask
 
 from flask.ext.login import LoginManager, UserMixin, AnonymousUser, login_user, logout_user, current_user, login_required, make_secure_token
 
+
+from methods.left_panel import left_panel
+from methods.get_all_users import get_all_users
+#flask.current_app.jinja_env.globals['left_panel'] = left_panel
 
 from methods.view import view
 from methods.save_edit import save_edit
@@ -33,6 +40,10 @@ wiki = Blueprint('appwiki', __name__,
 @wiki.before_app_request
 def before_app_request():
     flask.g.database = get_database_object('psql')
+    flask.current_app.jinja_env.globals['left_panel'] = left_panel
+    flask.current_app.jinja_env.globals['get_all_users'] = get_all_users
+
+
 # Обсуждения
 wiki.add_url_rule('/<word>/forum', methods=['GET', ], view_func=view_forum)
 wiki.add_url_rule('/<word>/forum', methods=[

@@ -3,14 +3,21 @@
 	<head>
     <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='stylewiki.css' ) }}">
     
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/jquery-ui.min.js"></script>
     
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('.static', filename='tag-it.min.js') }}"></script>     
+    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
+    <link href="{{ url_for( '.static', filename='jquery.tagit.css' ) }}" rel="stylesheet" type="text/css">
+
+
     <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='wmd.css' ) }}"  {#href="/wiki/staticwmd.css"#} />
     <script type="text/javascript" src="{{ url_for( '.static', filename='showdown.js' ) }}"></script>
-<!--    <script type="text/javascript" src="/static/wiki/wmd/wmd.js"></script>
--->
+    
+
+
     <title>{% block title  %}{% endblock %}</title>
 		<script>
 			function focus_true(obj){
@@ -57,24 +64,24 @@
 					</div>
 				</div>
 			</div>
-			<div id="left_panel">
-				<ul id="left_menu">
-          <li><a href="{{ url_for('.view') }}">Заглавная страница</a></li>
+      <div id="left_panel">
+        <ul id="left_menu">
+          {{ left_panel()|safe }}
+          {% if current_user.is_admin %}
+            <div style="padding-top:5px;">
+              <a href="{{ url_for('.view_form_edit', word = 'Служебная:Левое_меню') }}">[Править]</a>
+            </div>
+          {% endif %}
+{#          <li><a href="{{ url_for('.view') }}">Заглавная страница</a></li>
           <li><a href="{{ url_for('.view_alphabet') }}">Алфавитный указатель</a></li>
-      {#		<li><a href="/wiki/random">Случайная статья</a></li>
-      #}
           <li><a href="{{ url_for('.view_all_pages') }}">Все статьи</a></li>
-      {#   
-          <li><a href="/wiki/favorites">Избранные статьи</a></li>
-					<li><a href="/wiki/latter">Последние статьи</a></li>
-					<li><a href="/wiki/latedit">Последние правки</a></li>
-      #}  
-        </ul>
+#}        </ul>
 			</div>
 		<!--	<div id="conteiner">
 			-->
 				<div id="main_menu">
           {% if page %}
+            {% if navigation %} 
 				    <span class="create">
               {% if page.creation_date %}
 							  Созданна: {{ page.creation_date }}
@@ -84,21 +91,9 @@
 						    {% if page.modify_date %}
 							    Изменена: {{ page.modify_date }}
                 {% endif %}
-            </span>
+              </span>
+            {% endif %}
           {% endif %}
-
-          {#% if form %}
-				    <span class="create">
-              {% if form.create_date %}
-							  Создан: {{ form.create_date }}
-              {% endif %}
-					  </span>
-					  <span class="create">
-						    {% if form.modify_date %}
-							    Измененн: {{ form.modify_date }}
-                  {% endif %}
-                </span>
-          {% endif %#}
 
 					{% if navigation %}
 						<ul id="navigation">

@@ -14,7 +14,8 @@
                                     if( $('#page_name').val() == '')
                                       return false;
                                     window.location.replace( "http://" + window.location.hostname +"/wiki/" + $('#page_name').val() );
-                                },
+                                      {#       window.location.replace( {{ url_for(".view", word = $('#page_name')) }} ).val() );      
+                      #}    },
                                 "Cancel": function() {
                                     $(this).dialog("close");
                                 }
@@ -33,12 +34,14 @@
 	</div>
 
 	<hr class="line">
-
+  {% if page.text %}
+    {{ page.text|safe }}
+  
   <div class="text">
-    Всем привет!
     {% if current_user.is_authenticated() %}
       <a id="create" href="#">Создать</a> страницу
     {% endif %}
-	</div>
+  </div>
+  {% endif %}
 {% endblock %}
 

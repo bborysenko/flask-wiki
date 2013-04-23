@@ -7,7 +7,7 @@ import flask
 from flask.ext.login import current_user
 
 from appwiki.forms.create import CreateDataForm
-from appwiki.forms.edit import EditDataForm
+from appwiki.forms.edit import EditDataForm, ServiceGeneralForm, ServiceLeftMenuForm
 
 from appwiki.methods.access import access_f
 
@@ -30,6 +30,7 @@ def view_form_edit(word):
         if current_user.is_authenticated():
             if current_user.is_admin():
                 access_edit = True
+#    return word
 
     if current_user.is_authenticated() is False or access_edit is False:
         return render_template('page.html',
@@ -39,6 +40,42 @@ def view_form_edit(word):
                                edit = True,
                                word=get_url(word)
                                )
+    if current_user.is_admin() is False or (word == u"Служебная:Заглавная_страница" and word == u'Служебная:Левое_меню'):
+        return render_template('page.html',
+                               page=None,
+                               message=u"Вы не имеете прав на редaкатирование страницы",
+                               navigation=True,
+                               edit = True,
+                               word=get_url(word)
+                            )
+    if word == u"Служебная:Заглавная_страница":
+        form = ServiceGeneralForm(request.form)
+        action = u' создание '
+        if page is not None:
+            form.title.data = page['title']
+            form.text.data = page['text']
+            action = u" редактирование "
+        return render_template('service_general_page.html',
+                                form = form,
+                                navigation=True,
+                                edit = True,
+                                word=get_url(word),
+                                action_page = action
+                              )
+
+    if word == u"Служебная:Левое_меню":
+        form = ServiceLeftMenuForm(request.form)
+        action = u' создание '
+        if page is not None:
+            form.text.data = page['text']
+            action = u" редактирование "
+        return render_template('service_left_menu_page.html',
+                                form = form,
+                                navigation=True,
+                                edit = True,
+                                word=get_url(word),
+                                action_page = action
+                              )
     if page is None:
         # вывожу форму создания статьи
         form = CreateDataForm()
@@ -52,6 +89,7 @@ def view_form_edit(word):
 #        form.title.data = page['title']
         form.text.data = page['text']
         form.tags.data = ", ".join(page['tags'])
+#        form.tags.data = page['tags']
         form.url.data = page['url']
         form.access.data = page['access']
         form.access_show.data = page['access_show']

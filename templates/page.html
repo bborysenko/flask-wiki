@@ -23,4 +23,106 @@
 		    {{ page.text|safe }}
       </div>
     {% endif %}
+
+<div id="dialog">
+    <div style="float:left;width:400px;">
+        <div class="left_panel_header">
+            <input type="text" style="width:390px;">
+        </div>
+        <div class="header_users_left">
+            Все пользователи
+        </div>
+        <div class="left_users_panel">
+            <div class="left_user">
+                Иванов Иван
+            </div>
+            <div class="left_user">
+                Петров Петр
+            </div>
+        </div>
+    </div> 
+    <div>
+        <div class="right_panel_header">
+            <input type="text" style="width:350px;">
+        </div>
+        <div class="header_users_right">
+            Все пользователи
+        </div>
+        <div class="right_users_panel">
+            <div class="right_user">
+                User1
+            </div>
+            <div class="right_user">
+                User2
+            </div>
+        </div>
+    </div>
+  
+</div>
+
+<script>
+  function add_user(){  
+    elem = $( '<div class="right_user">' + $(this).text() + '</div>' ).bind('click', remove_user);
+    $('div.right_users_panel').append( elem );
+    $(this).remove();
+  }
+
+  function remove_user() {
+    elem = $( '<div class="left_user">' + $(this).text() + '</div>' ).bind('click', add_user);
+    $('div.left_users_panel').append(elem);
+    $(this).remove();
+  }
+
+  $(document).ready(
+    function(){
+      $('div.left_users_panel > div.left_user').each(
+            function(index, elem){
+              $(this).bind( 'click', add_user );
+            }
+      );
+      $('div.right_users_panel > div.right_user').each(
+            function(index, elem){
+              $(this).bind( 'click', remove_user );
+            }
+      );
+    }
+  );
+</script>
+
+
+<script type="text/javascript">
+    var $dialog; 
+    $(document).ready(function () {
+        $dialog = $('#dialog')
+                      .dialog({
+                            autoOpen: false,
+                            title: 'Создание страницы',
+                            modal: true, 
+                            buttons: {
+                                "OK": function() {
+                                    if( $('#page_name').val() == '')
+                                      return false;
+                                    window.location.replace( "http://" + window.location.hostname +"/wiki/" + $('#page_name').val() );
+                                      {#       window.location.replace( {{ url_for(".view", word = $('#page_name')) }} ).val() );      
+                      #}    },
+                                "Cancel": function() {
+                                    $(this).dialog("close");
+                                }
+                            }
+                            });
+    $dialog.dialog( "option", "width", 820 );
+    $dialog.dialog( "option", "height", 400 );
+                  $('#create').click(
+                      function () {
+                        $dialog.dialog('open');
+                        return false; ////cancel eventbubbeling
+                      });
+                  });
+</script>
+  <div class="text">
+      <a id="create" href="#">Создать</a> страницу
+   </div>
+
+
+
 {% endblock %}

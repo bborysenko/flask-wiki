@@ -2,7 +2,7 @@
 
 {% block content %}
   <form method="post" action="/wiki/{{word}}/edit">
-      {{ form.url }}
+    {#      {{ form.url }} #}
 			{% if form.errors %}
 				<div class="errors">
               {% if form.errors.access %}
@@ -58,12 +58,6 @@
       {{ form.text(class = "text_field", id="wmd-input") }}
   </div>                                          
 
-{#      <div class="block">
-        <div class="wmd-panel">
-          {{ form.text(class = "text_field wmd-input wmd-panel") }}
-        </div>
-			</div>
-#}
       <script type="text/javascript" src="{{ url_for( '.static', filename='wmd/wmd.js' ) }}"></script>
 
       <div class="block">
@@ -71,7 +65,13 @@
           Теги                                                   
         </div> 
         <div>
-          {{ form.tags(class = "text_field_line") }}
+          {{ form.tags( class = "text_field_line", id="myTags" ) }}
+          {#            <ul id="myTags" style="width:88%;" class="text_field_line">
+              {% for d in tags %}
+                <li>d</li>
+              {% endfor %}
+            </ul>
+          #}
         </div>
 			</div>
 
@@ -89,8 +89,13 @@
 			</div>
     </form>
     <script>
-      $('#form').unbind('submit');
 //      console.log( "qwerty" )
+       $("#myTags").tagit(                                                
+        {                                                                
+          fieldName: "tags"                                              
+        }                                                                
+      );   
     </script>
+
 {% endblock %}
 

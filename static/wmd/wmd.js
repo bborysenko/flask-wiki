@@ -309,7 +309,7 @@ Attacklab.wmdBase = function(){
 			
 			// The web form container for the text box and buttons.
 			var form = doc.createElement("form");
-			//form.onsubmit = function(){ return close(false); };
+			form.onsubmit = function(){ return close(false); };
 			style = form.style;
 			style.padding = "0";
 			style.margin = "0";
@@ -332,7 +332,7 @@ Attacklab.wmdBase = function(){
 			// The ok button
 			var okButton = doc.createElement("input");
 			okButton.type = "button";
-			//okButton.onclick = function(){ return close(false); };
+			okButton.onclick = function(){ return close(false); };
 			okButton.value = "OK";
 			style = okButton.style;
 			style.margin = "10px";
@@ -1195,14 +1195,13 @@ Attacklab.wmdBase = function(){
 			}
 			
 			if (inputBox.form) {
-				/*var submitCallback = inputBox.form.onsubmit;
+				var submitCallback = inputBox.form.onsubmit;
 				inputBox.form.onsubmit = function(){
-					convertToHtml();
+//					convertToHtml();
 					if (submitCallback) {
 						return submitCallback.apply(this, arguments);
 					}
 				};
-				*/
 			}
 		};
 		

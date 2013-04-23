@@ -6,6 +6,7 @@ import flask
 import markdown2
 
 from appwiki.methods.access import access_f
+from appwiki.methods.left_panel import left_panel
 
 def get_url(word):
     url = word.strip()
@@ -15,10 +16,50 @@ def get_url(word):
 
 def view(word=None):
     if word is None:
-        return render_template('general.html')
+        page = flask.g.database.get_page(get_url("Служебная:Заглавная_страница"))
+        if page is None:
+            if current_user.is_authenticated():
+                if current_user.is_admin():
+                    return redirect(url_for('.view_form_edit', word=get_url('Служебная:Заглавная_страница')))
+            else:
+                return render_template('general.html')
+        else:
+            page['text'] = markdown2.markdown(page['text'])
+            if current_user.is_authenticated():
+                if current_user.is_admin():
+                    return render_template('page.html',
+                                            page=page,
+                                            navigation=True,
+                                            read = True,
+                                            word=get_url("Служебная:Заглавная_страница")
+                                          )
+
+            return render_template('page.html', page=page, navigation = False)
     else:
         # Получаю страницу
         page = flask.g.database.get_page(get_url(word))
+
+        if word == u"Служебная:Заглавная_страница":
+            if current_user.is_authenticated():
+                if current_user.is_admin():
+                    if page is None:
+                        return ''
+                    else:
+                        page['text'] = markdown2.markdown(page['text'])
+                        return render_template('general.html', page=page, navigation=True, read = True, word=get_url(word))
+            return render_template('general.html', page=page, word=get_url(word))
+
+
+        if word == u"Служебная:Левое_меню":
+            if current_user.is_authenticated():
+                if current_user.is_admin():
+                    if page is None:
+                        return ''
+                    else:
+                        page['text'] = markdown2.markdown(page['text'])
+                        return render_template('left_menu.html', page=page, navigation=True, read = True, word=get_url(word))
+            return render_template('left_menu.html', page=page, word=get_url(word))
+
         if page is None:
             # Редирект на создание страницы
             return redirect(url_for('.view_form_edit', word=get_url(word)))

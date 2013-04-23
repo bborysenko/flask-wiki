@@ -6,7 +6,7 @@ import flask
 from flask.ext.login import current_user
 
 from appwiki.forms.create import CreateDataForm
-from appwiki.forms.edit import EditDataForm
+from appwiki.forms.edit import EditDataForm, ServiceGeneralForm, ServiceLeftMenuForm
 
 from appwiki.methods.access import access_f
 
@@ -19,11 +19,27 @@ def get_url(word):
 
 def save_edit(word=None):
     # Получаю статьью из БД
-#    return word
     page = flask.g.database.get_page(get_url(word))
     url = get_url(word)
     access_edit = True
     access_show = True
+    if word == u"Служебная:Заглавная_страница" or word == u"Служебная:Левое_меню":
+        if current_user.is_authenticated() is False:
+            return render_template('page.html',
+                                    page=page,
+                                    message=u"Вы не имеете прав на редaкатирование страницы",
+                                    navigation=True,
+                                    word=word,
+                                    edit = True
+                                  )
+        elif current_user.is_admin() is False:
+            return render_template('page.html',
+                                    page=page,
+                                    message=u"Вы не имеете прав на редaкатирование страницы",
+                                    navigation=True,
+                                    word=word,
+                                    edit = True
+                                )
     if page is not None:
         # Проверка на права пользователя вносить правки в статью
         access_edit = access_f(page['access'], current_user)
@@ -39,7 +55,85 @@ def save_edit(word=None):
                                navigation=True,
                                word=word,
                                edit = True
-                               )
+                              )
+
+    if word == u'Служебная:Заглавная_страница':
+        if current_user.is_admin() is False:
+            return render_template('page.html',
+                                    page=page,
+                                    message=u"Вы не имеете прав на редaкатирование страницы",
+                                    navigation=True,
+                                    word=word,
+                                    edit = True
+                                )
+        else:
+            form = ServiceGeneralForm(request.form)
+            if form.validate():
+                text = form.text.data.strip()
+                title = form.title.data.strip()
+                if page is None:
+                    flask.g.database.insert_page(url=word,
+                                                title=title,
+                                                text=text,
+                                                user=current_user.login,
+                                                comment='',
+                                                tags='',
+                                                access='',
+                                                access_show = ''
+                                                )
+                else:
+                    flask.g.database.update_page(url=url,
+                                            url_page=word,
+                                            title=title,
+                                            text=text,
+                                            user=current_user.login,
+                                            comment='',
+                                            tags='',
+                                            access='',
+                                            access_show = '',
+                                            active = True,
+                                            update_title = True
+                                        )
+                return redirect(url_for('.view', word=get_url(word)))
+
+
+    if word == u'Служебная:Левое_меню':
+        if current_user.is_admin() is False:
+            return render_template('page.html',
+                                    page=page,
+                                    message=u"Вы не имеете прав на редaкатирование страницы",
+                                    navigation=True,
+                                    word=word,
+                                    edit = True
+                                )
+        else:
+            form = ServiceLeftMenuForm(request.form)
+            if form.validate():
+                text = form.text.data.strip()
+                if page is None:
+                    flask.g.database.insert_page(url=word,
+                                                title='',
+                                                text=text,
+                                                user=current_user.login,
+                                                comment='',
+                                                tags='',
+                                                access='',
+                                                access_show = ''
+                                                )
+                else:
+                    flask.g.database.update_page(url=url,
+                                            url_page=word,
+                                            title='',
+                                            text=text,
+                                            user=current_user.login,
+                                            comment='',
+                                            tags='',
+                                            access='',
+                                            access_show = '',
+                                            active = True,
+                                            update_title = True
+                                        )
+                return redirect(url_for('.view', word=get_url(word)))
 
     if page is None:
         form = CreateDataForm(request.form)
@@ -49,7 +143,10 @@ def save_edit(word=None):
             url = get_url(form.title.data)
             title = form.title.data.strip()
             text = form.text.data.strip()
+
             tags = form.tags.data.strip()
+#            tags.x
+
             comment = form.comment.data.strip()
             access = form.access.data.strip()
             access_show = form.access_show.data.strip()
