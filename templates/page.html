@@ -23,8 +23,8 @@
 		    {{ page.text|safe }}
       </div>
     {% endif %}
-
-<div id="dialog">
+{#
+<div id="dialog_create">
     <div style="float:left;width:400px;">
         <div class="left_panel_header">
             <input type="text" style="width:390px;">
@@ -91,9 +91,9 @@
 
 
 <script type="text/javascript">
-    var $dialog; 
+    var $dialog_create; 
     $(document).ready(function () {
-        $dialog = $('#dialog')
+        $dialog_create = $('#dialog')
                       .dialog({
                             autoOpen: false,
                             title: 'Создание страницы',
@@ -103,18 +103,17 @@
                                     if( $('#page_name').val() == '')
                                       return false;
                                     window.location.replace( "http://" + window.location.hostname +"/wiki/" + $('#page_name').val() );
-                                      {#       window.location.replace( {{ url_for(".view", word = $('#page_name')) }} ).val() );      
-                      #}    },
+                          },
                                 "Cancel": function() {
                                     $(this).dialog("close");
                                 }
                             }
                             });
-    $dialog.dialog( "option", "width", 820 );
-    $dialog.dialog( "option", "height", 400 );
+    $dialog_create.dialog( "option", "width", 820 );
+    $dialog_create.dialog( "option", "height", 400 );
                   $('#create').click(
                       function () {
-                        $dialog.dialog('open');
+                        $dialog_create.dialog('open');
                         return false; ////cancel eventbubbeling
                       });
                   });
@@ -123,6 +122,6 @@
       <a id="create" href="#">Создать</a> страницу
    </div>
 
-
+   #}
 
 {% endblock %}

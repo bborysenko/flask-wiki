@@ -47,5 +47,5 @@ class CreateDataForm(Form):
     comment = TextField('Comment')
     tags = TextField('Tags')
     access = TextField('Access')
-    access = TextField('Access', [validators.required(message=u'Вы не внесли права  на правку страницы'), ])
+    access = TextField('Access', [validators.required(message=u'Вы не внесли права на правку и просмотр страницы'), ])
     access_show = TextField('AccessShow', [validators.required(message=u'Вы не внесли права на просмотр страницы')])

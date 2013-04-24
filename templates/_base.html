@@ -16,8 +16,9 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='wmd.css' ) }}"  {#href="/wiki/staticwmd.css"#} />
     <script type="text/javascript" src="{{ url_for( '.static', filename='showdown.js' ) }}"></script>
     
-
-
+            <script type="text/javascript" src="{{ url_for( '.static', filename='form_access_edit.js' ) }}"></script>
+     <script type="text/javascript" src="{{ url_for( '.static', filename='form_view_edit.js' ) }}"></script>
+    
     <title>{% block title  %}{% endblock %}</title>
 		<script>
 			function focus_true(obj){
@@ -67,11 +68,12 @@
       <div id="left_panel">
         <ul id="left_menu">
           {{ left_panel()|safe }}
-          {% if current_user.is_admin %}
+{#          {% if current_user.is_admin %}
             <div style="padding-top:5px;">
-              <a href="{{ url_for('.view_form_edit', word = 'Служебная:Левое_меню') }}">[Править]</a>
+              <a href="{{ url_for('.view_form_edit', word = 'Служебная:Левое_меню') }}">[Править]</a> 
             </div>
-          {% endif %}
+            {% endif %}
+#}
 {#          <li><a href="{{ url_for('.view') }}">Заглавная страница</a></li>
           <li><a href="{{ url_for('.view_alphabet') }}">Алфавитный указатель</a></li>
           <li><a href="{{ url_for('.view_all_pages') }}">Все статьи</a></li>
@@ -84,7 +86,7 @@
             {% if navigation %} 
 				    <span class="create">
               {% if page.creation_date %}
-							  Созданна: {{ page.creation_date }}
+							  Создана: {{ page.creation_date }}
               {% endif %}
 					  </span>
 					  <span class="create">

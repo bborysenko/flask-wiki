@@ -21,20 +21,19 @@ def view(word=None):
             if current_user.is_authenticated():
                 if current_user.is_admin():
                     return redirect(url_for('.view_form_edit', word=get_url('Служебная:Заглавная_страница')))
-            else:
-                return render_template('general.html')
+            return render_template('general.html')
         else:
             page['text'] = markdown2.markdown(page['text'])
             if current_user.is_authenticated():
                 if current_user.is_admin():
-                    return render_template('page.html',
+                    return render_template('general.html',
                                             page=page,
                                             navigation=True,
                                             read = True,
                                             word=get_url("Служебная:Заглавная_страница")
                                           )
 
-            return render_template('page.html', page=page, navigation = False)
+            return render_template('general.html', page=page, navigation = False)
     else:
         # Получаю страницу
         page = flask.g.database.get_page(get_url(word))
@@ -43,7 +42,7 @@ def view(word=None):
             if current_user.is_authenticated():
                 if current_user.is_admin():
                     if page is None:
-                        return ''
+                        return redirect(url_for('.view_form_edit', word=get_url('Служебная:Заглавная_страница')))
                     else:
                         page['text'] = markdown2.markdown(page['text'])
                         return render_template('general.html', page=page, navigation=True, read = True, word=get_url(word))
@@ -67,7 +66,9 @@ def view(word=None):
             # Вывод страницы
             access_show = True
 #            if current_user.is_authenticated():
-            access_show = access_f(page['access_show'], current_user)
+            access_show = access_f(page['access'], current_user)
+            if access_show is False:
+                access_show = access_f(page['access_show'], current_user)
             if current_user.is_authenticated():
                 if current_user.is_admin():
                     access_show = True

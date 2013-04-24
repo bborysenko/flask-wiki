@@ -12,7 +12,7 @@ class EditDataForm(Form):
 #    tags = SelectField('Tags', choices = [])
     tags = TextField('Tags')
     url = HiddenField('url')
-    access = TextField('Access', [validators.required(message=u'Вы не внесли права  на правку страницы')])
+    access = TextField('Access', [validators.required(message=u'Вы не внесли права  на правку и просмотр страницы')])
     access_show = TextField('AccessShow', [validators.required(message=u'Вы не внесли права на просмотр страницы')])
     active = BooleanField('Active')
 

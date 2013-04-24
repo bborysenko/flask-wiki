@@ -35,7 +35,7 @@
       
       <div class="block">
           <div style="width:120px;float:left;">
-            Права на правку
+            Права на правку и просмотр
           </div>  
           <div id="access_edit_block" style="">
               <div style="width:98%;">{{ form.access( class = "text_field_line" ) }}</div>
@@ -49,8 +49,12 @@
         <div style="width:120px;float:left;">                                  
             Права на просмотр                                                    
         </div>                                                                 
-        <div>                                                                  
-          {{ form.access_show(class="text_field_line") }}                      
+        <div id="access_show_block">                                                                  
+{#          {{ form.access_show(class="text_field_line") }}                      
+#}          <div style="width:98%;">{{ form.access_show( class = "text_field_line" ) }}</div>
+          <div style="float:right;margin-top:-45px;">
+            <input type="button" value="+" id="add_users_show">
+          </div>
         </div>                                                                 
       </div>
 
@@ -81,7 +85,7 @@
 			</div>
 
 			<div class="block">
-				<input type="submit" value="Сохранить"/>
+				<input type="submit" id="save_page" value="Сохранить"/>
       </div>
       <script type="text/javascript">
             $("#myTags").tagit(
@@ -89,13 +93,37 @@
                 fieldName: "tags"
               }
               );
-            $('#access').val( "{{current_user.last_name}} {{ current_user.first_name }}" );
-            $('#access').tagit({'fieldName':'access'});
+{#            $('#access').val( "{{current_user.last_name}} {{ current_user.first_name }}" );
+#}            $('#access').tagit({'fieldName':'access'});
+            $('#access_show').tagit({'fieldName':'access_show'});
             $('ul.tagit').width("86%");
       </script>
     </form>
 
 <div id="dialog">
+    <div style="float:left;width:400px;">
+        <div class="left_panel_header">
+            <input type="text" id="left_panel_search" class="left_panel_search" value="Начните вводить имя пользователя" >
+        </div>
+        <div class="header_users_left">
+            Все пользователи
+        </div>
+        <div class="left_users_panel">
+        </div>
+    </div> 
+    <div>
+        <div class="right_panel_header">
+{#            <input type="text" value="Начните вводить имя пользователя" style="width:350px;">
+#}        </div>
+        <div class="header_users_right">
+            Выбранные пользователи
+        </div>
+        <div class="right_users_panel">
+        </div>
+    </div>
+</div>
+
+<div id="dialog_view">
     <div style="float:left;width:400px;">
         <div class="left_panel_header">
             <input type="text" id="left_panel_search" value="Начните вводить имя пользователя" style="width:390px;">
@@ -104,32 +132,21 @@
             Все пользователи
         </div>
         <div class="left_users_panel">
-{#            <div class="left_user">
-                Иванов Иван
-            </div>
-            <div class="left_user">
-                Петров Петр
-            </div>
-#}        </div>
+        </div>
     </div> 
     <div>
         <div class="right_panel_header">
-            <input type="text" value="Начните вводить имя пользователя" style="width:350px;">
-        </div>
+{#            <input type="text" value="Начните вводить имя пользователя" style="width:350px;">
+#}       </div>
         <div class="header_users_right">
             Выбранные пользователи
         </div>
         <div class="right_users_panel">
-{#            <div class="right_user">
-                User1
-            </div>
-            <div class="right_user">
-                User2
-            </div>
-#}        </div>
+        </div>
     </div>
-  
-  {{get_all_users()|safe}}
-  <script type="text/javascript" src="{{ url_for( '.static', filename='form_access_edit.js' ) }}"></script>
+<div>  
+
+{{get_all_users()|safe}}
+
 {% endblock %}
 

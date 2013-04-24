@@ -295,6 +295,8 @@ class Postgresql(object):
         else:
             result = []
             for d in wiki:
+                if d.title == "" or d.url == u'Служебная:Заглавная_страница':
+                    continue
                 tags = [t.tag_name for t in d.page.tags]
                 res = {
                         'title' : d.title,
@@ -316,6 +318,8 @@ class Postgresql(object):
         wiki = Wiki.query.all()
         result = []
         for d in wiki:
+            if d.title == "" or d.url == u'Служебная:Заглавная_страница':
+                continue
             tags = [t.tag_name for t in d.page.tags]
             res = {
                 'title' : d.title,
@@ -328,8 +332,9 @@ class Postgresql(object):
         return result
 
     def get_alphabet(self):
-        result = db.session.execute("""SELECT UPPER(substring(title from 1 for 1)) AS alphabet,
+        result = db.session.execute(u"""SELECT UPPER(substring(title from 1 for 1)) AS alphabet,
                                     COUNT(substring(title from 1 for 1)) FROM wiki
+                                    WHERE url != 'Служебная:Заглавная_страница'
                                     GROUP BY alphabet ORDER BY alphabet
                                     """
                                    )

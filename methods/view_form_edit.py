@@ -40,7 +40,7 @@ def view_form_edit(word):
                                edit = True,
                                word=get_url(word)
                                )
-    if current_user.is_admin() is False or (word == u"Служебная:Заглавная_страница" and word == u'Служебная:Левое_меню'):
+    if current_user.is_admin() is False and (word == u"Служебная:Заглавная_страница" or word == u'Служебная:Левое_меню'):
         return render_template('page.html',
                                page=None,
                                message=u"Вы не имеете прав на редaкатирование страницы",
@@ -80,8 +80,8 @@ def view_form_edit(word):
         # вывожу форму создания статьи
         form = CreateDataForm()
         form.title.data = get_word(word)
-        form.access.data = u'All'
-        form.access_show.data = u'All'
+        form.access.data = current_user.login
+        form.access_show.data = u'all'
         return render_template('form_create.html', form=form, word=get_url(word))
     else:
         # Вывожу форму редактирования статьи

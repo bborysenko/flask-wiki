@@ -29,19 +29,27 @@
                       });
                   });
 </script>
-	<div class="title">
-		Заглавная страница: «Живые встречи» Wiki
+  <div class="title">
+    {% if page %}
+      {{ page.title }}
+    {% else %}
+		    Заглавная страница: «Живые встречи» Wiki
+    {% endif %}
 	</div>
-
-	<hr class="line">
-  {% if page.text %}
+  <hr class="line">
+  {% if page%}
     {{ page.text|safe }}
-  
+  {% else %}
+  <div class="text" style="color:red;">
+    Главная страница еще не созданна
+  </div>
+  {% endif %}
+
   <div class="text">
     {% if current_user.is_authenticated() %}
       <a id="create" href="#">Создать</a> страницу
     {% endif %}
   </div>
-  {% endif %}
+  
 {% endblock %}
 

@@ -43,12 +43,10 @@ def save_edit(word=None):
     if page is not None:
         # Проверка на права пользователя вносить правки в статью
         access_edit = access_f(page['access'], current_user)
-        access_show = access_f(page['access_show'], current_user)
     if current_user.is_admin():
         access_edit = True
-        access_show = True
 
-    if current_user.is_authenticated() is False or access_edit is False or access_show is False:
+    if current_user.is_authenticated() is False or access_edit is False:
         return render_template('page.html',
                                page=page,
                                message=u"Вы не имеете прав на редaкатирование страницы",
@@ -137,6 +135,7 @@ def save_edit(word=None):
 
     if page is None:
         form = CreateDataForm(request.form)
+#        return "access = " + form.access.data.strip()
          # Создаю новую статью
         if form.validate():
             # Получаю данные из формы
@@ -149,6 +148,8 @@ def save_edit(word=None):
 
             comment = form.comment.data.strip()
             access = form.access.data.strip()
+
+#            return access
             access_show = form.access_show.data.strip()
             # Сохраняю данные в БД
             flask.g.database.insert_page(url=url,
