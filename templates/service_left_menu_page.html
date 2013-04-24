@@ -16,13 +16,13 @@
       </div>
     {% endif %}
   <div class="title">
-    Служебная: {{action_page}} списка левого меню
+    Левое меню: {{action_page}}
   </div>
   <hr class="line">
    <div class="block">
      <div id="wmd-button-bar" class="wmd-panel"></div>
      <div>{{ form.text(class = "text_field", id="wmd-input") }}</div>
-     <script type="text/javascript" src="{{ url_for( '.static', filename='wmd/wmd.js' ) }}"></script>
+     <script type="text/javascript" src="{{ url_for( '.static', filename='js/wmd.js' ) }}"></script>
    </div>
   
   <div class="block">

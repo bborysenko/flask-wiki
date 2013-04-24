@@ -93,7 +93,19 @@ def save_edit(word=None):
                                             update_title = True
                                         )
                 return redirect(url_for('.view', word=get_url(word)))
-
+            else:
+                action = u' создание '
+                if page is not None:
+#                    form.title.data = page['title']
+#                    form.text.data = page['text']
+                    action = u" редактирование "
+                return render_template('service_general_page.html',
+                                        form = form,
+                                        navigation=True,
+                                        edit = True,
+                                        word=get_url(word),
+                                        action_page = action
+                                    )
 
     if word == u'Служебная:Левое_меню':
         if current_user.is_admin() is False:

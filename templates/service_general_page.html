@@ -3,20 +3,15 @@
   <form method="post" id="form" action="/wiki/{{word}}/edit">
     {% if form.errors %}
       <div class="errors">
-        {% if form.errors.access %}
+        {% if form.errors.title %}
           <div class="error">
-            Ошибка: {{ form.errors.access[0] }}
-          </div>
-        {% endif %}
-        {% if form.errors.access_show %}
-          <div class="error">
-            Ошибка: {{ form.errors.access_show[0] }}
+            Ошибка: {{ form.errors.title[0] }}
           </div>
         {% endif %}
       </div>
     {% endif %}
   <div class="title">
-    Служебная: {{action_page}} заглавной страницы
+    Заглавная страница: {{action_page}}
   </div>
   <hr class="line">
 
@@ -32,7 +27,7 @@
    <div class="block">
      <div id="wmd-button-bar" class="wmd-panel"></div>
      <div>{{ form.text(class = "text_field", id="wmd-input") }}</div>
-     <script type="text/javascript" src="{{ url_for( '.static', filename='wmd/wmd.js' ) }}"></script>
+     <script type="text/javascript" src="{{ url_for( '.static', filename='js/wmd.js' ) }}"></script>
    </div>
   
   <div class="block">

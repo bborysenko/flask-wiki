@@ -1,23 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='stylewiki.css' ) }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='css/stylewiki.css' ) }}">
     
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
     
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="{{ url_for('.static', filename='tag-it.min.js') }}"></script>     
+    <script type="text/javascript" src="{{ url_for('.static', filename='js/tag-it.min.js') }}"></script>     
     <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-    <link href="{{ url_for( '.static', filename='jquery.tagit.css' ) }}" rel="stylesheet" type="text/css">
+    <link href="{{ url_for( '.static', filename='css/jquery.tagit.css' ) }}" rel="stylesheet" type="text/css">
 
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='wmd.css' ) }}"  {#href="/wiki/staticwmd.css"#} />
-    <script type="text/javascript" src="{{ url_for( '.static', filename='showdown.js' ) }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='css/wmd.css' ) }}"  {#href="/wiki/staticwmd.css"#} />
+    <script type="text/javascript" src="{{ url_for( '.static', filename='js/showdown.js' ) }}"></script>
     
-            <script type="text/javascript" src="{{ url_for( '.static', filename='form_access_edit.js' ) }}"></script>
-     <script type="text/javascript" src="{{ url_for( '.static', filename='form_view_edit.js' ) }}"></script>
+            <script type="text/javascript" src="{{ url_for( '.static', filename='js/form_access_edit.js' ) }}"></script>
+     <script type="text/javascript" src="{{ url_for( '.static', filename='js/form_view_edit.js' ) }}"></script>
     
     <title>{% block title  %}{% endblock %}</title>
 		<script>
