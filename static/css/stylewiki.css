@@ -254,7 +254,7 @@ ul#left_menu li a{
 	border-left:none;
 	margin-left:-5px;
 	padding-left:-10px;
-	background: #fff url(/wiki/static/search.png) no-repeat center center;
+	background: #fff url(../images/search.png) no-repeat center center;
 	-moz-border-radius: 0px 5px 5px 0px;
 	-webkit-border-radius: 0px 5px 5px 0px;
 	border-radius: 0px 5px 5px 0px;
