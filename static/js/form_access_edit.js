@@ -169,7 +169,7 @@ $(document).ready( function(){
                     ); 
                 }
             );
-            $('form').css("display","none")
+            $('#form_page').css("display","none")
             $('#access').tagit('removeAll');
             for(i = 0; i < arr_login.length; i++){
                 $('#access').tagit('createTag', arr_login[i]);

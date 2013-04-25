@@ -1,7 +1,7 @@
 {% extends "_base.html" %}
 
 {% block content %}
-  <form method="post" action="/wiki/{{word}}/edit">
+<form id="form_page" method="post" action="/wiki/{{word}}/edit">
     {#      {{ form.url }} #}
 			{% if form.errors %}
 				<div class="errors">

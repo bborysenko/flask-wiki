@@ -13,7 +13,7 @@
                                 "OK": function() {
                                     if( $('#page_name').val() == '')
                                       return false;
-                                    window.location.replace( "http://" + window.location.hostname +"/wiki/" + $('#page_name').val() );
+                                      window.location.replace( {{ url_for('.view') }} + $('#page_name').val() + '/edit' );
                                       {#       window.location.replace( {{ url_for(".view", word = $('#page_name')) }} ).val() );      
                       #}    },
                                 "Cancel": function() {

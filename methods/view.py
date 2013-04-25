@@ -60,8 +60,9 @@ def view(word=None):
             return render_template('left_menu.html', page=page, word=get_url(word))
 
         if page is None:
-            # Редирект на создание страницы
-            return redirect(url_for('.view_form_edit', word=get_url(word)))
+            return render_template('not_found_page.html', word = word)
+#            # Редирект на создание страницы
+#            return redirect(url_for('.view_form_edit', word=get_url(word)))
         else:
             # Вывод страницы
             access_show = True

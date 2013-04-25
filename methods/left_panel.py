@@ -24,11 +24,11 @@ def left_panel():
             content_begin = content_begin + 1
             addres = d[link_begin:link_end]
             link = ""
-            if addres == u'Заглавная_страница' or addres == u'Служебная:Заглавная_страница':
+            if addres.lower() == u'заглавная_страница' or addres.lower() == u'служебная:заглавная_страница':
                 link = '<a href="' + flask.url_for('.view') + '">' + d[content_begin:content_end] + '</a>'
-            elif addres == u'Все_статьи':
+            elif addres.lower() == u'служебная:все_статьи':
                 link = '<a href="' + flask.url_for('.view_all_pages') + '">' + d[content_begin:content_end] + '</a>'
-            elif addres == u'Алфавитный_указатель':
+            elif addres.lower() == u'служебная:алфавитный_указатель':
                 link = '<a href="' + flask.url_for('.view_alphabet') + '">' + d[content_begin:content_end] + '</a>'
             elif addres[0:7] == 'http://' or addres[0:8] == 'https://' or addres[0:6] == "ftp://":
                 link = '<a href="' + addres + '">' + d[content_begin:content_end] + '</a>'

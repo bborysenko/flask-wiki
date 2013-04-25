@@ -10,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask.ext.login import UserMixin
 from flask.ext.login import LoginManager,UserMixin,AnonymousUser,login_user,logout_user,current_user,login_required, make_secure_token
 
-import sphinxapi
+#import sphinxapi
 
 import models
 from appwiki.methods.access import access_f
@@ -18,7 +18,8 @@ from appwiki.methods.access import access_f
 db  = SQLAlchemy()
 
 def indexer():
-    os.system(ur"indexer --rotate --config /usr/local/etc/sphinx.conf --all")
+    pass
+#    os.system(ur"indexer --rotate --config /usr/local/etc/sphinx.conf --all")
 
 
 def get_result_search(str_search, str_text, sub = False):
@@ -359,26 +360,47 @@ class Postgresql(object):
 #        wiki = Wiki.query.filter(Wiki.title.startswith(letters)).group_by(Wiki.title).all()
 
     def get_result_search(self, str_search):
-        return None
-        client = sphinxapi.SphinxClient()
-        client.SetServer('127.0.0.1', 3312)
-        data = client.Query(str_search)
-        arr_id_pages = [d['id'] for d in data['matches'] ]
+#        return None
+#        client = sphinxapi.SphinxClient()
+#        client.SetServer('127.0.0.1', 3312)
+#        data = client.Query(str_search)
+#        arr_id_pages = [d['id'] for d in data['matches'] ]
+#
+#        pages = Page.query.filter_by(active=True).filter(Page.id.in_(arr_id_pages))
+#
+#        pages = Page.query.filter_by(active=True).join(pages_tags).join(Tags).filter(Tags.id.in_(arr_id_tags))
 
-        pages = Page.query.filter_by(active=True).filter(Page.id.in_(arr_id_pages))
 
+#        wiki = Wiki.query.filter(Wiki.title.like(str_search)).filter(db.and_(Page.text.like(str_search), Page.active==True)).all()
+
+
+        wiki = Wiki.query.filter(Wiki.title.ilike("%" + str_search + "%")).all()
+        wiki_id = [w.id for w in wiki ]
+        page = None
+        page = Page.query.filter(
+                                db.or_(
+                                        db.and_( Page.text.ilike("%" + str_search + "%"), Page.active == True)
+#                                                Page.wiki_id.in_(wiki_id)
+                                        ,
+                                        db.and_(
+                                            Page.wiki_id.in_(wiki_id),
+                                            Page.active == True
+                                        )
+                                    )
+                            ).all()
+#        page.y
         result = []
-        for d in pages:
+        for d in page:
             tags = [t.tag_name for t in d.tags]
             text = get_result_search( str_search, d.text, sub = True )
             title = get_result_search( str_search, d.wiki.title, sub = False )
             res = {
-                       'title' : title,
-                        'url' : d.wiki.url,
-                        'text' : text,
-                        'tags' : tags,
-                        'creation_date' : str(d.wiki.creation_date)[0:10]
-                    }
+                    'title' : title,
+                    'url' : d.wiki.url,
+                    'text' : text,
+                    'tags' : tags,
+                    'creation_date' : str(d.wiki.creation_date)[0:10]
+                }
             result.append(res)
         return result
 

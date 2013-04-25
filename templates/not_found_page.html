@@ -1,0 +1,20 @@
+{% extends "_base.html" %}                                                     
+{% block title %}Index{% endblock %}                                           
+{% block content %}
+
+  <div class="title">
+    {{ word }}
+  </div>
+  
+  <hr class="line">
+  
+  <div class="text">
+    Нет статьи с таким названием
+    <div class="block">
+      {% if current_user.is_authenticated() %}
+        Вы можете <a href="{{ url_for('.view_form_edit', word=word )  }}">создать<a/> такую страницу
+      {% endif%}
+    </div>
+  </div>           
+  
+{% endblock%}
