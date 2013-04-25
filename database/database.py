@@ -2,7 +2,6 @@
 from postgresql.postgresql import Postgresql
 
 from flask import current_app
-from appwiki.conf import *
 
 def get_database_object(name, *args):
     if name == 'mongodb':
