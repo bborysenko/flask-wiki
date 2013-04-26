@@ -50,13 +50,15 @@ def view_form_edit(word):
     if word == u"Служебная:Заглавная_страница":
         form = ServiceGeneralForm(request.form)
         action = u' создание '
+        navigation = False
         if page is not None:
             form.title.data = page['title']
             form.text.data = page['text']
+            navigation = True
             action = u" редактирование "
         return render_template('service_general_page.html',
                                 form = form,
-                                navigation=True,
+                                navigation=navigation,
                                 edit = True,
                                 word=get_url(word),
                                 action_page = action
@@ -65,12 +67,14 @@ def view_form_edit(word):
     if word == u"Служебная:Левое_меню":
         form = ServiceLeftMenuForm(request.form)
         action = u' создание '
+        navigation = False
         if page is not None:
             form.text.data = page['text']
             action = u" редактирование "
+            navigation = True
         return render_template('service_left_menu_page.html',
                                 form = form,
-                                navigation=True,
+                                navigation=navigation,
                                 edit = True,
                                 word=get_url(word),
                                 action_page = action

@@ -15,5 +15,8 @@
 	    <div class="text">
 		    {{ page.text|safe }}
       </div>
+
+      {% include "delete_page_dialog.html" %}
+
     {% endif %}
 {% endblock %}
