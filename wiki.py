@@ -27,6 +27,7 @@ from methods.view_alphabet import view_alphabet
 from methods.view_pages_favorites import view_pages_favorites
 from methods.view_pages_latedit import view_pages_latedit
 from methods.view_pages_latter import view_pages_latter
+from methods.delete_page import delete_page
 
 from database.database import get_database_object
 
@@ -103,3 +104,5 @@ wiki.add_url_rule('/latedit', methods=[
 wiki.add_url_rule('/latter/<num>', methods=[
                   'GET', ], view_func=view_pages_latter)
 wiki.add_url_rule('/latter', methods=['GET', ], view_func=view_pages_latter)
+
+wiki.add_url_rule('/<word>/delete/<page_id>', methods=['GET', ], view_func=delete_page)

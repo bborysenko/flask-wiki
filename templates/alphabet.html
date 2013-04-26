@@ -9,11 +9,11 @@
 
   <hr class="line">
 
-<table id="toc" class="plainlinks" style="color:blue;width: 100%;padding: 3px;margin: 0 auto;text-align:center;">
+<table id="toc" class="plainlinks" style="color:blue;padding: 3px;">
     <tbody>
       <tr>
         {% for d in "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ" %}
-        <td style="30px;"> 
+        <td style="width:35px;"> 
               {% if alphabet.ru[d] %}
                 <span>
                   <a style="text-decoration:none;color:blue;" title="Колличество статей: {{ alphabet.ru[d] }}" href="/wiki/alphabet/{{d }}">{{ d }}
@@ -30,7 +30,7 @@
       </tr>
       <tr>
         {% for d in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" %}
-          <td style="width:35px">
+          <td style="">
               {% if alphabet.en[d] %}
                 <span>
                   <a style="text-decoration:none;color:blue;" title="Колличество статей: {{ alphabet.en[d] }}" href="/wiki/alphabet/{{d }}">{{ d }}

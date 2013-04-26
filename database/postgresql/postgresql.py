@@ -49,7 +49,7 @@ def get_result_search(str_search, str_text, sub = False):
                 text = "..." + text
             if end_text < len(str_text):
                 text = text + "..."
-        begin = text.find(str_search)
+        begin = (text.lower()).find(str_search.lower())
         if begin != -1:
             text = text[0:begin] + '<span style="background-color:yellow;size:15px;">' + text[begin:begin + len(str_search)] + "</span>" + text[begin + len(str_search):-1]
     return text
@@ -158,9 +158,7 @@ class Postgresql(object):
                     active = True,
                     comment = comment
                 )
-#        tags.x
         tags = [t.replace(' ', '').strip() for t in tags.split(',')]
-#        tags.x
         for t in tags:
             tag = Tags.query.filter_by(tag_name=t).first()
             if tag is None:
@@ -218,13 +216,14 @@ class Postgresql(object):
             public = False
             if d.active == True :
                 public = True
+            user = models.User.query.filter_by(id=d.user_id).first()
             page = {
                 'text' : d.text,
                 'title' : wiki.title,
                 'creation_date' : str(d.creation_date)[0:-7],
                 'public' : public,
                 'size' : len(d.text),
-                'user' :  models.User.query.filter_by(id=d.user_id).first().login,
+                'user' :  user.last_name + " " + user.first_name,
                 'comment' : d.comment,
                 '_id' : d.id
             }
@@ -416,3 +415,15 @@ class Postgresql(object):
             }
             result.append(res)
         return result
+
+    def delete_page(self, word, page_id):
+        page = Page.query.filter_by(id = page_id).first()
+        if page.active == True:
+            wiki = Wiki.query.filter_by(url = word).first()
+            pages = Page.query.filter_by(wiki_id = wiki.id).all()
+            for page in pages:
+                db.session.delete(page)
+            db.session.delete(wiki)
+        else:
+            db.session.delete(page)
+        db.session.commit()

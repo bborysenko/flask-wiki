@@ -53,7 +53,12 @@ def view(word=None):
             if current_user.is_authenticated():
                 if current_user.is_admin():
                     if page is None:
-                        return ''
+                        return render_template('left_menu.html',
+                                                message = u'Левое меню еще не созданно',
+                                                navigation=True,
+                                                read = True,
+                                                word=get_url("Служебная:Левое_меню"),
+                                            )
                     else:
                         page['text'] = markdown2.markdown(page['text'])
                         return render_template('left_menu.html', page=page, navigation=True, read = True, word=get_url(word))
@@ -82,5 +87,4 @@ def view(word=None):
                                             read = True
                                         )
             page['text'] = markdown2.markdown(page['text'])
-#            page.x
             return render_template('page.html', page=page, navigation=True, read = True, word=get_url(word))

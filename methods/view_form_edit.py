@@ -30,7 +30,6 @@ def view_form_edit(word):
         if current_user.is_authenticated():
             if current_user.is_admin():
                 access_edit = True
-#    return word
 
     if current_user.is_authenticated() is False or access_edit is False:
         return render_template('page.html',
@@ -76,6 +75,9 @@ def view_form_edit(word):
                                 word=get_url(word),
                                 action_page = action
                               )
+    if word.find(' ') != -1:
+        return redirect( url_for('.view_form_edit', word = get_url(word)) )
+
     if page is None:
         # вывожу форму создания статьи
         form = CreateDataForm()
