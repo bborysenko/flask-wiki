@@ -103,6 +103,17 @@
               <li><a {% if read %} id="active" {% endif %} href="{{ url_for('.view', word=word) }}"{#href="/wiki/{{word}}"#}>Чтение</a></li>
                 <li><a {% if edit %} id="active" {% endif %} href="{{ url_for('.view_form_edit', word=word) }}">Правка</a></li>
                 <li><a {% if history %} id="active" {% endif %}href="{{ url_for('.view_form_history', word=word) }}">История</a></li>
+                
+                 {% if current_user.is_authenticated() %}                             
+                    {% if current_user.is_admin() %} 
+                <li>
+                <a class="delete_page" public="1"
+                        href="{{ url_for('.delete_page', word = word) }}">
+                        Удалить  
+                  </a>
+              </li>
+                    {% endif %}
+                  {% endif %}
       {#         <li><a href="/wiki/{{word}}/forum">Обсуждение</a></li>
       #}      {% endif %}
 						</ul>
@@ -146,5 +157,7 @@
 
 			</div>
 <!--		</div>
--->	</body>
+-->	
+  {% include "delete_page_dialog.html" %}
+  </body>
 </html>

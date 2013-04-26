@@ -106,3 +106,6 @@ wiki.add_url_rule('/latter/<num>', methods=[
 wiki.add_url_rule('/latter', methods=['GET', ], view_func=view_pages_latter)
 
 wiki.add_url_rule('/<word>/delete/<page_id>', methods=['GET', ], view_func=delete_page)
+
+
+wiki.add_url_rule('/<word>/delete', methods=['GET', ], view_func=delete_page)

@@ -416,14 +416,29 @@ class Postgresql(object):
             result.append(res)
         return result
 
-    def delete_page(self, word, page_id):
+    def delete_page(self, word, page_id = None):
+        if page_id is None:
+            wiki = Wiki.query.filter_by(url = word).first()
+            db.session.delete(wiki)
+            db.session.commit()
+            return 3
+
         page = Page.query.filter_by(id = page_id).first()
+        if page is None:
+            return 0
         if page.active == True:
             wiki = Wiki.query.filter_by(url = word).first()
+            if wiki is None:
+                return 0
             pages = Page.query.filter_by(wiki_id = wiki.id).all()
+            if pages is None:
+                return 0
             for page in pages:
                 db.session.delete(page)
             db.session.delete(wiki)
+            db.session.commit()
+            return 2
         else:
             db.session.delete(page)
         db.session.commit()
+        return 1

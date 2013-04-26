@@ -100,51 +100,7 @@
       </script>
     </form>
 
-<div id="dialog">
-    <div style="float:left;width:400px;">
-        <div class="left_panel_header">
-            <input type="text" id="left_panel_search" class="left_panel_search" value="Начните вводить имя пользователя" >
-        </div>
-        <div class="header_users_left">
-            Все пользователи
-        </div>
-        <div class="left_users_panel">
-        </div>
-    </div> 
-    <div>
-        <div class="right_panel_header">
-{#            <input type="text" value="Начните вводить имя пользователя" style="width:350px;">
-#}        </div>
-        <div class="header_users_right">
-            Выбранные пользователи
-        </div>
-        <div class="right_users_panel">
-        </div>
-    </div>
-</div>
-
-<div id="dialog_view">
-    <div style="float:left;width:400px;">
-        <div class="left_panel_header">
-            <input type="text" id="left_panel_search" value="Начните вводить имя пользователя" style="width:390px;">
-        </div>
-        <div class="header_users_left">
-            Все пользователи
-        </div>
-        <div class="left_users_panel">
-        </div>
-    </div> 
-    <div>
-        <div class="right_panel_header">
-{#            <input type="text" value="Начните вводить имя пользователя" style="width:350px;">
-#}       </div>
-        <div class="header_users_right">
-            Выбранные пользователи
-        </div>
-        <div class="right_users_panel">
-        </div>
-    </div>
-<div>  
+{% include "dialog.html" %} 
 
 {{get_all_users()|safe}}
 

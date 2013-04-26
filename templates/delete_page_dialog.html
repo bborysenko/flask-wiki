@@ -1,0 +1,69 @@
+<div id="message_box">                                                       
+  <p style="color:red;font-size:15px;">
+  Вы действительно намерены удалить запись?
+  </p>
+</div>
+
+<div id="message_box_public">                                                
+   <p style="color:red;font-size:15px;">
+   Эта активная страница! Уничтожив ее Вы потеряете ВСЮ информацию связанную с этой страницей. Продолжить?
+   </p>
+ </div>
+
+<script type="text/javascript">
+  var link = "";
+  var public_page = 0;
+
+
+  $message_box_public = $('#message_box_public').dialog({
+                                        autoOpen: false,
+                                        title: 'Подтвердите операцию',
+                                        modal: true,
+                                        buttons: {
+                                                  "Cancel": function() {
+                                                      $(this).dialog("close");
+                                                      return false;
+                                                  },
+                                                  
+                                                  "OK": function() {
+                                                      $(this).dialog('close');
+                                                      window.location.replace( link );
+                                                  },
+                                              }
+                                    }
+                            );
+
+
+  $message_box = $('#message_box').dialog({
+                                        autoOpen: false,
+                                        title: 'Подтвердите операцию',
+                                        modal: true,
+                                        buttons: {
+                                                  "OK": function() {
+                                                      $(this).dialog('close');
+                                                      if(public_page == 1){
+                                                         $message_box_public.dialog('open');
+                                                      } else {
+                                                        window.location.replace( link );
+                                                      }
+                                                  },
+                                                  "Cancel": function() {
+                                                      $(this).dialog("close");
+                                                      return false;
+                                                  }
+                                              }
+                                    }
+                            );
+  $message_box.dialog( "option", "width", 500 );
+  $message_box_public.dialog( "option", "width", 500 )
+  
+  $('.delete_page').click(
+    function(){
+        link = $(this).attr('href');
+        public_page = $(this).attr('public');
+        $message_box.dialog('open');
+
+        return false;
+    }
+  );
+</script>
