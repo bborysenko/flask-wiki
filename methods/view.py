@@ -54,7 +54,7 @@ def view(word=None):
                 if current_user.is_admin():
                     if page is None:
                         return render_template('left_menu.html',
-                                                message = u'Левое меню еще не созданно',
+                                                message = u'Левое меню еще не создано',
                                                 navigation=True,
                                                 read = True,
                                                 word=get_url("Служебная:Левое_меню"),
