@@ -2,7 +2,7 @@
 #from jinja2.environment import Environment
 
 
-from flask import Blueprint
+from flask import Blueprint, render_template
 import flask
 
 from flask.ext.login import LoginManager, UserMixin, AnonymousUser, login_user, logout_user, current_user, login_required, make_secure_token
@@ -109,3 +109,9 @@ wiki.add_url_rule('/<word>/delete/<page_id>', methods=['GET', ], view_func=delet
 
 
 wiki.add_url_rule('/<word>/delete', methods=['GET', ], view_func=delete_page)
+
+
+def test():
+    return render_template('test_page.html')
+
+wiki.add_url_rule('/test', methods=['GET', ], view_func=test)

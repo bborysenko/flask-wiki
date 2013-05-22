@@ -26,6 +26,8 @@ def left_panel():
             link = ""
             if addres.lower() == u'заглавная_страница' or addres.lower() == u'служебная:заглавная_страница':
                 link = '<a href="' + flask.url_for('.view') + '">' + d[content_begin:content_end] + '</a>'
+            elif addres.lower() == u'служебная:последние_правки':
+                link = '<a href="' + flask.url_for('.view_pages_latedit') + '">' + d[content_begin:content_end] + '</a>'
             elif addres.lower() == u'служебная:все_статьи':
                 link = '<a href="' + flask.url_for('.view_all_pages') + '">' + d[content_begin:content_end] + '</a>'
             elif addres.lower() == u'служебная:алфавитный_указатель':

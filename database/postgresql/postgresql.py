@@ -12,6 +12,8 @@ from flask.ext.login import LoginManager,UserMixin,AnonymousUser,login_user,logo
 
 #import sphinxapi
 
+import datetime
+
 import models
 from appwiki.methods.access import access_f
 
@@ -390,6 +392,8 @@ class Postgresql(object):
 #        page.y
         result = []
         for d in page:
+            if d.wiki.url == u"Служебная:Заглавная_страница" or d.wiki.url == u"Служебная:Левое_меню":
+                continue
             tags = [t.tag_name for t in d.tags]
             text = get_result_search( str_search, d.text, sub = True )
             title = get_result_search( str_search, d.wiki.title, sub = False )
@@ -442,3 +446,29 @@ class Postgresql(object):
             db.session.delete(page)
         db.session.commit()
         return 1
+
+    def get_latedit_page(self):
+        page = Page.query.filter(Page.active==True).order_by(Page.creation_date).all()
+        result = []
+        for d in page:
+            if d.wiki is None:
+                continue
+            if d.wiki.title == "" or d.wiki.url == u"Служебная:Заглавная_страница" or d.wiki.url == u"Служебная:Левое_меню":
+                continue
+            tags = [t.tag_name for t in d.tags]
+
+            user = models.User.query.filter_by(id=d.user_id).first()
+            user_name = user.last_name + " " + user.first_name
+            res = {
+                'text' : d.text[0:300],
+                'url' : d.wiki.url,
+                'title' : d.wiki.title,
+                'user' : user_name,
+                'access' : d.wiki.access_show,
+                'creation_date' : str(d.wiki.creation_date)[0:19],
+                'modify_date' : str(d.creation_date)[0:19],
+                'tags': tags
+            }
+
+            result.append(res)
+        return result

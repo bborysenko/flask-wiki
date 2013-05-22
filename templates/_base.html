@@ -1,162 +1,123 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html>
-	<head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='css/stylewiki.css' ) }}">
-    
-    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css" />
-    
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" src="{{ url_for('.static', filename='js/tag-it.min.js') }}"></script>     
-    <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
-    <link href="{{ url_for( '.static', filename='css/jquery.tagit.css' ) }}" rel="stylesheet" type="text/css">
-
-
-    <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='css/wmd.css' ) }}"  {#href="/wiki/staticwmd.css"#} />
-    <script type="text/javascript" src="{{ url_for( '.static', filename='js/showdown.js' ) }}"></script>
-    
-            <script type="text/javascript" src="{{ url_for( '.static', filename='js/form_access_edit.js' ) }}"></script>
-     <script type="text/javascript" src="{{ url_for( '.static', filename='js/form_view_edit.js' ) }}"></script>
-    
-    <title>{% block title  %}{% endblock %}</title>
-		<script>
-			function focus_true(obj){
-        if( obj.value.toLowerCase().trim() == "поиск" )
-        {
-          obj.value = "" ;
-        }
-      }
-
-      function focus_false(obj){
-        if( obj.value.trim() == ""){
-          obj.value = "Поиск" ;
-        }
-      }
-
-      function form_submit(){
-        text_field = document.getElementById('search');
-        text = text_field.value.toLowerCase().trim()
-        if( text == "поиск" || text.length <= 0 ){
-          return false;
-        }
-        else{
-          return true;
-        }
-      }
-		</script>
-	</head>
-	<body>
-		<div width="100%">
-			<div width="100%">
-				<div id="header">
-					<div id="logo">
-						«Живые встречи»<br>
-						WIKI
-					</div>
-					<div id="user">
-
-            {% if current_user.is_authenticated() %}                           
-                <a href="{{ url_for('profile') }}">Профиль</a> ({{ current_user.login }}) | <a href="{{ url_for('logout') }}">Выход</a>
-            {% else %}                                                         
-                <a href="{{ url_for('login', next=request.path) }}">Вход</a>   
-            {% endif %} 
-
-					</div>
-				</div>
-			</div>
-      <div id="left_panel">
-        <ul id="left_menu">
-          {{ left_panel()|safe }}
-{#          {% if current_user.is_admin %}
-            <div style="padding-top:5px;">
-              <a href="{{ url_for('.view_form_edit', word = 'Служебная:Левое_меню') }}">[Править]</a> 
-            </div>
-            {% endif %}
-#}
-{#          <li><a href="{{ url_for('.view') }}">Заглавная страница</a></li>
-          <li><a href="{{ url_for('.view_alphabet') }}">Алфавитный указатель</a></li>
-          <li><a href="{{ url_for('.view_all_pages') }}">Все статьи</a></li>
-#}        </ul>
-			</div>
-		<!--	<div id="conteiner">
-			-->
-				<div id="main_menu">
-          {% if page %}
-            {% if navigation %} 
-				    <span class="create">
-              {% if page.creation_date %}
-							  Создана: {{ page.creation_date }}
-              {% endif %}
-					  </span>
-					  <span class="create">
-						    {% if page.modify_date %}
-							    Изменена: {{ page.modify_date }}
-                {% endif %}
-              </span>
-            {% endif %}
-          {% endif %}
-
-					{% if navigation %}
-						<ul id="navigation">
-              {% if current_user.is_authenticated() %} 
-              <li><a {% if read %} id="active" {% endif %} href="{{ url_for('.view', word=word) }}"{#href="/wiki/{{word}}"#}>Чтение</a></li>
-                <li><a {% if edit %} id="active" {% endif %} href="{{ url_for('.view_form_edit', word=word) }}">Правка</a></li>
-                <li><a {% if history %} id="active" {% endif %}href="{{ url_for('.view_form_history', word=word) }}">История</a></li>
-                
-                 {% if current_user.is_authenticated() %}                             
-                    {% if current_user.is_admin() %} 
-                <li>
-                <a class="delete_page" public="1"
-                        href="{{ url_for('.delete_page', word = word) }}">
-                        Удалить  
-                  </a>
-              </li>
+    <head>
+        <script src="{{ url_for('.static', filename='js/jquery-latest.js' ) }}" type="text/javascript"></script>
+        <link href="{{ url_for('.static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+        
+        <script type="text/javascript" src="{{ url_for( '.static', filename='js/form_access_edit.js' ) }}"></script>
+        <script type="text/javascript" src="{{ url_for( '.static', filename='js/form_view_edit.js' ) }}"></script>
+        
+        <title>{% block title  %}{% endblock %}</title>
+        
+        <link rel="stylesheet" type="text/css" href="{{ url_for( '.static', filename='css/stylewiki.css' ) }}">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+        <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/flick/jquery-ui.css">
+        <script type="text/javascript" src="{{ url_for('.static', filename='js/tag-it.min.js') }}"></script>     
+        <link href="{{ url_for( '.static', filename='css/jquery.tagit.css' ) }}" rel="stylesheet" type="text/css">
+        
+        
+        <style>
+            div{
+/*                border:1px solid black;
+*/                
+            }
+            h3{
+                line-height:20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+<!-- Header -->
+            <div class="row-fluid">
+                <div class="span3" style="height:80px;text-align:center;">
+                    <h3><a style="color:auto;text-decoration: none;" href="/wiki/test">«Живые встречи» WIKI</a></h3>
+                </div>
+                <div class="span9" style="text-align:right;">
+                    {% if current_user.is_authenticated() %}                           
+                        <a href="{{ url_for('profile') }}">Профиль</a> ({{ current_user.login }}) | <a href="{{ url_for('logout') }}">Выход</a>
+            	    {% else %}                                                         
+                        <a href="{{ url_for('login', next=request.path) }}">Вход</a>   
                     {% endif %}
-                  {% endif %}
-      {#         <li><a href="/wiki/{{word}}/forum">Обсуждение</a></li>
-      #}      {% endif %}
-						</ul>
-					{% endif %}
-          <div  id="searchbar"> 
-          		<form id="searchform"  onSubmit="return form_submit();" method="post" action="/wiki/find">
+                </div>
+            </div>
+            
+            <div id="left_menu" class="row-fluid">
+                <!-- Left menu -->
+                <div class="span3" style="">
+                    <div class="navbar-inner">
+                        <ul class="nav" style="padding-top:10px;">
+                            {{ left_panel()|safe }}
+                        </ul>
+                    </div>
+                </div>
                 
-                <div>
-                  <div style="width:300px;float:left;margin:0;padding:0;">
-                    <input autocomplete="off" type="text" {% if search_text %} value="{{ search_text }}" {% else  %} value="Поиск" {% endif %}id="search" onBlur="focus_false(this)" onFocus="focus_true(this)" name="search"/>
-                  </div>
-                  <div style="width:30px;text-align:left;margin:0;padding:0;gackground-color:#0f0;float:left;">
-                    <input type="submit" value=""/>
-                  </div>
-								</span>
-              </div>      
-          	</form>
-          </div>  
-				</div>
-			<div id="conteiner">
-				<div id="content">
-						{% block content %}
-						{% endblock %}
-					</div>
-				</div>
-			</div>
-			<div id="copy">
-        <div><span>В случае возникновения вопросов - <a href="mailto:(скрытый адрес)" onclick="this.href='mailto:'+'meet'+'@intertax.ru';">напишите нам.</a></span><br/>
-              <span style="-moz-transform: rotate(180deg); -webkit-transform: rotate(180deg); transform: rotate(180deg); filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=2); display: inline-block;">&copy;</span> Copyleft 2011-2013 by <a target="_blank" href="http://www.intertax.ru/">Intertax JSC</a>.</div>
-                    <div style="float: right;">
-                            <!-- KRS-IX Counter -->
-                                              <script src="http://log.krs-ix.ru/krscat.js" type="text/javascript"></script>
-                                                        <script type="text/javascript">tracker_krs("813");</script>
-                                                                  <noscript>
-                                                                              <a href="http://www.krs-ix.ru/counter" target="_blank">
-                                                                                          <img src="http://log.krs-ix.ru/generate.php?id=813&s=0" border="0" 
-                                                                                                    width="88" height="31" alt="KRS-IX Counter"></a>
-                                                                                                            </noscript>
-                                                                                                                      <!-- /KRS-IX Counter -->
-                                                                                                                              </div>
+                
+                <!-- Content Conteiner -->
+                <div class="span9">
+                    <!-- Top menu -->
+                    <div class="row-fluid">
+                        
+                        <div class="span12">
+                            <div class="row-fluid">
+                                <form method="post" action="{{ url_for('.find_pages') }}">
+                                    <div class="span12" style="text-align:right;">
+                                        <ul class="nav nav-tabs">
+                                            {% if navigation %}
+                                                {% if current_user.is_authenticated() %} 
+                                                    <li {% if read %} class="active" {% endif %}><a href="{{ url_for('.view', word=word) }}">Чтение</a></li>
+                                                    <li {% if edit %} class="active" {% endif %}><a  href="{{ url_for('.view_form_edit', word=word) }}">Правка</a></li>
+                                                    <li {% if history %} class="active" {% endif %}><a href="{{ url_for('.view_form_history', word=word) }}">История</a></li>
+                                                {% endif %}
+                                            {% endif %}
+{#    
+					                        <li class="active"><a href="#">Просмотр</a></li>
+                                            <li><a href="#">Правка</a></li>
+                                            <li><a href="#">История</a></li>
+#}
+<input type="text" autocomplete="off" {% if search_text %} value="{{ search_text }}" {% else %} value="" {% endif %} name="search" placeholder="Поиск">
+                                        </ul> 
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    
+                    </div>
+                    <!-- Content block -->
+                    <div class="row-fluid">
+                        <div class="span12">
+                            {% block content %}{% endblock %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="row-fluid">
+            <div class="span12" style="">
+              <div id="footer" style="margin-top:60px;">
+        <hr>
+        
+        
+        <div style="float:left;"><span>В случае возникновения вопросов - <a href="mailto:(скрытый адрес)" onclick="this.href='mailto:'+'meet'+'@intertax.ru';">напишите нам.</a></span><br>
+        <span style="-moz-transform: rotate(180deg); -webkit-transform: rotate(180deg); transform: rotate(180deg); filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=2); display: inline-block;">©</span> Copyleft 2011-2013 by <a target="_blank" href="http://www.intertax.ru/">Intertax JSC</a>.</div>
+        <div style="float: right;">
+          <!-- KRS-IX Counter -->
+          <script src="http://log.krs-ix.ru/krscat.js" type="text/javascript"></script>
+          <script type="text/javascript">tracker_krs("813");</script>
+          <noscript>
+          &lt;a href="http://www.krs-ix.ru/counter" target="_blank"&gt;
+          &lt;img src="http://log.krs-ix.ru/generate.php?id=813&amp;s=0" border="0" 
+          width="88" height="31" alt="KRS-IX Counter"&gt;&lt;/a&gt;
+          </noscript>
+          <!-- /KRS-IX Counter -->
+        </div>
+        
+    </div>
 
-			</div>
-<!--		</div>
--->	
-  </body>
+            </div>
+        </div>
+{#
+        <script src="{{ url_for('.static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+#}
+    </body>
 </html>

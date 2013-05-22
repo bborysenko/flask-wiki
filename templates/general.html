@@ -1,35 +1,6 @@
 {% extends "_base.html" %}
 {% block title %}Index{% endblock %}
 {% block content %}
-{#
-  <script type="text/javascript">
-    var $dialog; 
-    $(document).ready(function () {
-        $dialog = $('<div></div>').html('Название <input type="text" value=""  style="width:380px;" id="page_name">')
-                      .dialog({
-                            autoOpen: false,
-                            title: 'Создание страницы',
-                            modal: true, 
-                            buttons: {
-                                "OK": function() {
-                                    if( $('#page_name').val() == '')
-                                      return false;
-                                      window.location.replace( {{ url_for('.view') }} + $('#page_name').val() + '/edit' );
-                          },
-                                "Cancel": function() {
-                                    $(this).dialog("close");
-                                }
-                            }
-                            });
-        $dialog.dialog( "option", "width", 500 );
-                  $('#create').click(
-                      function () {
-                        $dialog.dialog('open');
-                        return false; ////cancel eventbubbeling
-                      });
-                  });
-</script>
-#}
   <div class="title">
     {% if page %}
       {{ page.title }}
@@ -45,9 +16,9 @@
     Главная страница еще не созданна
   </div>
   {% endif %}
-
+  {#
 {% include "delete_page_dialog.html" %}
-
+#}
 {#
   <div class="text">
     {% if current_user.is_authenticated() %}

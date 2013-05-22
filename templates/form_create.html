@@ -1,108 +1,136 @@
+
+
 {% extends "_base.html" %}
 
 {% block content %}
-  <form id="form_page" method="post" id="form" action="/wiki/{{word}}/edit">
 
+<form id="form_page" class="form-horizontal well" method="post" action="/wiki/{{word}}/edit">
+    {#      {{ form.url }} #}
     {% if form.errors %}
-    <div class="errors">                                                   
-        {% if form.errors.access %}                                      
-          <div class="error">                                            
-            Ошибка: {{ form.errors.access[0] }}                          
-          </div>                                                         
-        {% endif %}                                                      
-        {% if form.errors.access_show %}                                        
-          <div class="error">                                                   
-            Ошибка: {{ form.errors.access_show[0] }}                       
-          </div>                                                                
-        {% endif %}                                                        
-      </div>
-    {% endif %}
-    
+        <div class="row-fluid">
+            <div class="span12">
+				<div class="errors" style="margin-bottom:10px;">
+                    {% if form.errors.access %}
+                        <div class="error">
+                            Ошибка: {{ form.errors.access[0] }}
+                        </div>
+                    {% endif %}
+                    {% if form.errors.access_show %}
+                        <div class="error">
+                            Ошибка: {{ form.errors.access_show[0] }}
+                        </div>
+                    {% endif %}
+				</div>		
+	        </div>
+        </div>
+    {% endif %}		
+
+<div class="row-fluid">
+        <div class="span12">
 			<div class="title">
 				Создание страницы
 			</div>
-			
 			<hr class="line">
-			
-      <div class="block" style="width:100%">
-        <div style="width:120px;float:left;">
-          Заголовок
+		</div>
+    </div>
+    <div class="row-fluid">
+        <div class="span2">            
+            Заголовок
         </div>
-        <div style="width:100%;">
-         {{ form.title( class = "text_field_line" ) }}
+        
+        <div class="span10">
+            {{ form.title( class = "input-xlarge span12" ) }}
         </div>
-      </div>
-      
-      <div class="block">
-          <div style="width:120px;float:left;">
-            Права на правку и просмотр
-          </div>  
-          <div id="access_edit_block" style="">
-              <div style="width:98%;">{{ form.access( class = "text_field_line" ) }}</div>
-              <div style="float:right;margin-top:-45px;">
-                <input type="button" value="+" id="add_users_edit">
-              </div>
-          </div>   
-      </div>
+    </div>
 
-      <div class="block">                                                      
-        <div style="width:120px;float:left;">                                  
-            Права на просмотр                                                    
-        </div>                                                                 
-        <div id="access_show_block">                                                                  
-{#          {{ form.access_show(class="text_field_line") }}                      
-#}          <div style="width:98%;">{{ form.access_show( class = "text_field_line" ) }}</div>
-          <div style="float:right;margin-top:-45px;">
-            <input type="button" value="+" id="add_users_show">
-          </div>
-        </div>                                                                 
-      </div>
-
-      <div class="block">                                                          
-        <div id="wmd-button-bar" class="wmd-panel"></div>                          
-          {{ form.text(class = "text_field", id="wmd-input") }}                    
-      </div>
-
-
-      <script type="text/javascript" src="{{ url_for( '.static', filename='js/wmd.js' ) }}"></script>  
-
-      <div class="block">
-        <div style="width:120px;float:left;">
-          Теги
+    <div class="row-fluid">
+        <div class="span2">            
+            Права на правку и<br> просмотр
         </div>
-        <div>
-          {{ form.tags( class = "text_field_line", id="myTags" ) }} 
+        
+        <div class="span9" id="access_edit_block">
+            <div>{{ form.access( class = "" ) }}</div>
         </div>
-			</div>
+        <div class="span1">
+            <input type="button" value="+" class="btn btn-info" id="add_users_edit">    
+        </div>
+    </div>
+    
+    <div class="row-fluid">
+            <div class="span2">
+                Права на просмотр
+            </div>
+            <div class="span9" id="access_show_block">
+                <div>{{ form.access_show( class = "" ) }}</div>
+            </div>
+        <div class="span1">
+            <input type="button" class="btn btn-info" value="+" id="add_users_show">
+        </div>
+    </div>
 
-      <div class="block">
-        <div style="width:120px;float:left;">
-          Комментарий
+    <div class="row-fluid">
+        <div class="span2">
+            Опубликовать
+            {{ form.active }}
         </div>
-        <div>
-				  {{ form.comment( class = "text_field_line" ) }}
-        </div>
-			</div>
+    </div>
 
-			<div class="block">
-				<input type="submit" id="save_page" value="Сохранить"/>
-      </div>
-      <script type="text/javascript">
+    <div class="row-fluid">
+        <div class="span12">
+            {{ form.text(class = "text_field", id="textID") }}
+            <script type="text/javascript" src="{{ url_for( '.static', filename='ckeditor/ckeditor.js' ) }}"></script>
+        </div>
+    </div>
+
+    <br>
+    
+    <div class="row-fluid">
+        <div class="span2">
+                Теги
+        </div>
+        <div class="span10">
+            {{ form.tags( class = "", id="myTags" ) }}               
+        </div>
+    </div>
+    
+    <div class="row-fluid">
+            <div class="span2">
+                Комментарий
+            </div>
+            <div class="span10">
+                {{ form.comment( class = "input-xlarge span12" ) }}
+            </div>
+    </div>
+
+    <br>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <input type="submit" class="btn btn-primary" value="Сохранить"/>
+        </div>
+    </div>
+
+</form>
+
+   <script type="text/javascript">
             $("#myTags").tagit(
               {
                 fieldName: "tags"
               }
               );
-{#            $('#access').val( "{{current_user.last_name}} {{ current_user.first_name }}" );
-#}            $('#access').tagit({'fieldName':'access'});
+            $('#access').tagit({'fieldName':'access'});
             $('#access_show').tagit({'fieldName':'access_show'});
-            $('ul.tagit').width("86%");
+
+            CKEDITOR.replace( 'textID',{});
       </script>
     </form>
 
-{% include "dialog.html" %} 
+{% include "dialog.html" %}
+
+{% include "delete_page_dialog.html" %}
 
 {{get_all_users()|safe}}
 
 {% endblock %}
+
 

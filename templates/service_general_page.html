@@ -1,41 +1,61 @@
 {% extends "_base.html" %}
 {% block content %}
-  <form method="post" id="form" action="/wiki/{{word}}/edit">
-    {% if form.errors %}
-      <div class="errors">
-        {% if form.errors.title %}
-          <div class="error">
-            Ошибка: {{ form.errors.title[0] }}
-          </div>
-        {% endif %}
-      </div>
-    {% endif %}
-  <div class="title">
-    Заглавная страница: {{action_page}}
-  </div>
-  <hr class="line">
 
-   <div class="block">
-     <div style="width:120px;float:left;">
-        Заголовок
-     </div>
-     <div>
-       {{ form.title(class="text_field_line") }}
-     </div>
-   </div>
-  <br>
-   <div class="block">
-     <div id="wmd-button-bar" class="wmd-panel"></div>
-     <div>{{ form.text(class = "text_field", id="wmd-input") }}</div>
-     <script type="text/javascript" src="{{ url_for( '.static', filename='js/wmd.js' ) }}"></script>
-   </div>
-  
-  <div class="block">
-    <input type="submit" value="Сохранить"/>
-  </div>
+<form method="post" class="form-horizontal well" action="/wiki/{{word}}/edit">
+{% if form.errors %}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="errors" style="margin-bottom:10px;">
+                {% if form.errors.title %}
+                    <div class="error">
+                        Ошибка: {{ form.errors.title[0] }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="title">
+            Заглавная страница: {{action_page}}
+        </div>
+        <hr class="line">
+    </div>
+</div>
+        
+<div class="row-fluid">
+    <div class="span12">
+        <div {% if form.errors %} class="control-group error" {% else %} class="control-group" {% endif %}> 
+                <label class="control-label" for="title" style="text-align:left;">Заголовок</label>
+                <div class="controls">
+                    {{ form.title(class="input-xlarge span12") }}
+                </div>
+        </div>
+    </div>
+<div>    
+
+<div class="row-fluid">
+    <div class="span12">
+        <div>{{ form.text(class = "text_field", id="textID") }}</div>
+        <script type="text/javascript" src="{{ url_for( '.static', filename='ckeditor/ckeditor.js' ) }}"></script>     
+    </div>
+</div>
+<br>
+<div class="row-fluid">
+    <div class="span12">
+        <input class="btn btn-primary" type="submit" value="Сохранить"/>
+    </div>
+</div>
+
 
 </form>
 
+<script>
+  CKEDITOR.replace( 'textID',{}); 
+</script>
+{#
 {% include "delete_page_dialog.html" %}
-
+#}
 {% endblock %}

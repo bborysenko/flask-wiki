@@ -3,79 +3,89 @@
 {% block content %}
   
 {% if pages %}
-  
-	<div class="title">
-    {{ pages['title'] }}
-	</div>
-	<hr class="line">
-  
-  <form action="/wiki/{{word}}/history" method="post">
 
-		<table id="history_table">
-			<tr>
-				<th width="50">
-					Активно
-				</th>
-				<th width="200">
-					Дата изменения
-				</th>
-				<th width="200">
-					Пользователь
-				</th>	
-				<th width="80">
-					Символов
-				</th>
-				<th width="80">
-					Просмотр
-				</th>   
-				<th>
-					Комментарий
-        </th>
-          {% if current_user.is_authenticated() %}
-            {% if current_user.is_admin() %}
-              <th width="20">
-                Удалить
-              </th>
-            {% endif %}
-          {% endif %}
-			</tr>
+  <form class="form-horizontal well" action="/wiki/{{word}}/history" method="post">
 
-			{% for page in pages['posts'] %}
-				<tr>
-					<td>
-            <input type="radio" name="history" {% if page['public'] == True %} checked {% endif %} value="{{page['_id']}}">&nbsp
-					</td>
-					<td>
-						{{ page['creation_date'] }}
-					</td>
-					<td>
-            {{ page['user'] }}
-					</td>
-					<td>
-						{{ page['size'] }}
-					</td>
-					<td>
-            <a href="/wiki/{{word}}/history/{{page['_id']}}">
-              <img width="20" height="20" src="{{ url_for( '.static', filename='images/lupa.jpg' ) }}"></a>
-					</td>
-					<td>
-						{{ page['comment'] }}					
-          </td>
-          {% if current_user.is_authenticated() %}
-            {% if current_user.is_admin() %}
-            <td>
-              <a {% if page['public'] == True %} public="1"{% else %} public="0"  {% endif %} class="delete_page" href="{{ url_for('.delete_page', page_id=page['_id'], word = word) }}"><img title="Удалить" src="{{ url_for('.static', filename="images/delete.gif") }}"></a>
-            </td>
-            {% endif %}
-          {% endif %}
-				</tr>
-      {% endfor %}
+    <div class="row-fluid">
+        <div class="span12">
+	        <div class="title">
+                {{ pages['title'] }}
+	        </div>
+	        <hr class="line">
+        </div>
+    </div>
+
     
-		</table>
-		<div style="margin-top:10px;margin-bottom:50px">
-			<input type="submit" value="Сохранить">
-		</div>
-  </form>
+    <div class="row-fluid">
+        <div class="span12">
+            <table id="history_table" class="table table-bordered table-striped">
+			    <tr>
+				    <th width="50">
+					    Активно
+				    </th>
+				    <th width="200">
+					    Дата изменения
+				    </th>
+				    <th width="200">
+					    Пользователь
+				    </th>	
+				    <th width="80">
+					    Символов
+				    </th>
+				    <th width="80">
+					    Просмотр
+				    </th>   
+				    <th>
+					    Комментарий
+                    </th>
+                    {% if current_user.is_authenticated() %}
+                        {% if current_user.is_admin() %}
+                            <th width="20">
+                                Удалить
+                            </th>
+                        {% endif %}
+                    {% endif %}
+			</tr>
+			    {% for page in pages['posts'] %}
+				    <tr>
+					    <td>
+                            <input type="radio" name="history" {% if page['public'] == True %} checked {% endif %} value="{{page['_id']}}">&nbsp
+					    </td>
+					    <td>
+						    {{ page['creation_date'] }}
+					    </td>
+					    <td>
+                            {{ page['user'] }}
+					    </td>
+					    <td>
+						    {{ page['size'] }}
+					    </td>
+					    <td>
+                            <a href="/wiki/{{word}}/history/{{page['_id']}}">
+                                <img width="20" height="20" src="{{ url_for( '.static', filename='images/lupa.jpg' ) }}">
+                            </a>
+					    </td>
+					    <td>
+						    {{ page['comment'] }}					
+                        </td>
+                            {% if current_user.is_authenticated() %}
+                                {% if current_user.is_admin() %}
+                                    <td>
+                                        <a {% if page['public'] == True %} public="1"{% else %} public="0"  {% endif %} class="delete_page" href="{{ url_for('.delete_page', page_id=page['_id'], word = word) }}"><img title="Удалить" src="{{ url_for('.static', filename="images/delete.gif") }}">
+                                        </a>
+                                    </td>
+                                {% endif %}
+                            {% endif %}
+				</tr>
+            {% endfor %}
+	    </table>
+        
+    <div class="row-fluid">
+        <div class="span12">
+			<input type="submit" class="btn btn-primary" value="Сохранить">
+        </div>
+    </div>
+</form>
 
   {% include "delete_page_dialog.html" %}
   

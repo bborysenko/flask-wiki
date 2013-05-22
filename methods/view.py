@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for
 from flask.ext.login import current_user
 import flask
 
-import markdown2
+#import markdown2
 
 from appwiki.methods.access import access_f
 from appwiki.methods.left_panel import left_panel
@@ -23,7 +23,7 @@ def view(word=None):
                     return redirect(url_for('.view_form_edit', word=get_url('Служебная:Заглавная_страница')))
             return render_template('general.html')
         else:
-            page['text'] = markdown2.markdown(page['text'])
+            page['text'] = page['text']
             if current_user.is_authenticated():
                 if current_user.is_admin():
                     return render_template('general.html',
@@ -44,7 +44,7 @@ def view(word=None):
                     if page is None:
                         return redirect(url_for('.view_form_edit', word=get_url('Служебная:Заглавная_страница')))
                     else:
-                        page['text'] = markdown2.markdown(page['text'])
+                        page['text'] = page['text']
                         return render_template('general.html', page=page, navigation=True, read = True, word=get_url(word))
             return render_template('general.html', page=page, word=get_url(word))
 
@@ -60,7 +60,7 @@ def view(word=None):
                                                 word=get_url("Служебная:Левое_меню"),
                                             )
                     else:
-                        page['text'] = markdown2.markdown(page['text'])
+                        page['text'] = page['text']
                         return render_template('left_menu.html', page=page, navigation=True, read = True, word=get_url(word))
             return render_template('left_menu.html', page=page, word=get_url(word))
 
@@ -86,5 +86,5 @@ def view(word=None):
                                             word=word,
                                             read = True
                                         )
-            page['text'] = markdown2.markdown(page['text'])
+            page['text'] = page['text']
             return render_template('page.html', page=page, navigation=True, read = True, word=get_url(word))

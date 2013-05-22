@@ -3,23 +3,24 @@
 {% block title %}Search{% endblock %}
 
 {% block content %}
-  <div class="title">
-    {{ search }}
-  </div>
-
-  <hr class="line">
+<div class="row-fluid">
+    <div class="span12">
+        <div class="title">
+            {{ search }}
+        </div>
+            <hr class="line">
+    </div>
+</div>
 
   {% if pages %}
     {% for page in pages %}
-      <div class="text">
-         <div style="color:black;font-size:18px;">
-            <a href="/wiki/{{page.url}}">{{page.title|title}}</a>
+        <div class="block navbar-inner">
+            <div style="color:black;font-size:18px;">
+                <a href="/wiki/{{page.url}}">{{page.title|title}}</a>
           </div>
-
           <div style="color:blue;font-size:12px;">                               
               Дата: {{page.creation_date}}                                       
           </div>
-
           <div style="color:blue;font-size:12px;">
             Теги:
             {% for d in page.tags %}
