@@ -46,12 +46,12 @@
     </div>
     
     <div class="row-fluid">
-            <div class="span2">
-                Права на просмотр
-            </div>
-            <div class="span9" id="access_show_block">
-                <div>{{ form.access_show( class = "" ) }}</div>
-            </div>
+        <div class="span2">
+            Права на просмотр
+        </div>
+        <div class="span9" id="access_show_block">
+            <div>{{ form.access_show( class = "" ) }}</div>
+        </div>
         <div class="span1">
             <input type="button" class="btn btn-info" value="+" id="add_users_show">
         </div>
@@ -112,13 +112,11 @@
 
             CKEDITOR.replace( 'textID',{});
       </script>
-    </form>
-
 {% include "dialog.html" %}
 
 {% include "delete_page_dialog.html" %}
 
 {{get_all_users()|safe}}
-
+</div>
 {% endblock %}
 
