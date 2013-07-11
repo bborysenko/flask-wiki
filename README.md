@@ -1,7 +1,7 @@
-wiki
+Flask-wiki
 ====
 
-wiki
+Flask-wiki
 
 Example wiki for Flask Microframework.
 
